@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZanoxDiscordBot", "ZanoxDiscordBot\ZanoxDiscordBot.csproj", "{D5D47A91-D2D6-46FC-BD9F-9780F13C4334}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D5D47A91-D2D6-46FC-BD9F-9780F13C4334}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5D47A91-D2D6-46FC-BD9F-9780F13C4334}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5D47A91-D2D6-46FC-BD9F-9780F13C4334}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5D47A91-D2D6-46FC-BD9F-9780F13C4334}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {193D05D7-5991-4216-A589-AAA5FB016A69}
+	EndGlobalSection
+EndGlobal
