@@ -161,5 +161,20 @@ namespace ZanoxDiscordBot.Modules
 
             await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
+
+        [Command("!weather")]
+        public async Task Weather()
+        {
+            string json = "";
+            using (WebClient client = new WebClient())
+            {
+                json = client.DownloadString("https://samples.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=b6907d289e10d714a6e88b30761fae22");
+            }
+
+            var dataObject = JsonConvert.DeserializeObject<dynamic>(json);
+
+            string weather = dataObject.weather[0].weather.ToString();
+            await Context.Channel.SendMessageAsync($"The weather is {weather}!");
+        }
     }
 }
