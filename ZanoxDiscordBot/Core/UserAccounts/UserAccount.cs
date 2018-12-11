@@ -10,8 +10,14 @@ namespace ZanoxDiscordBot.Core.UserAccounts
     {
         public ulong ID { get; set; }
 
-        public uint Level { get; set; }
-
         public uint XP { get; set; }
+
+        public uint LevelNumber
+        {
+            get
+            {
+                return (uint)Math.Sqrt(XP / 50);
+            }
+        }
     }
 }

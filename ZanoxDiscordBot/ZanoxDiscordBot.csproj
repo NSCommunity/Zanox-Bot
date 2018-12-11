@@ -153,11 +153,11 @@
     <Compile Include="CommandHandler.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Core\DataStorage.cs" />
+    <Compile Include="Core\LevelingSystem\Leveling.cs" />
     <Compile Include="Core\UserAccounts\UserAccount.cs" />
     <Compile Include="Core\UserAccounts\UserAccounts.cs" />
     <Compile Include="Modules\Misc.cs" />
     <Compile Include="Music\Search.cs" />
-    <Compile Include="Music\YouTubeService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities.cs" />

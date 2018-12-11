@@ -10,6 +10,7 @@ using Discord.WebSocket;
 using ZanoxDiscordBot.Core.UserAccounts;
 using System.Net;
 using Newtonsoft.Json;
+using System.Net.Http;
 
 namespace ZanoxDiscordBot.Modules
 {
@@ -47,7 +48,7 @@ namespace ZanoxDiscordBot.Modules
 
             await Context.Channel.SendMessageAsync("", false, embed.Build());
             await Task.Delay(3000);
-            await Context.Channel.SendMessageAsync("@ everyone");
+            await Context.Channel.SendMessageAsync("@everyone");
         }
 
         [Command("!say")]
@@ -104,6 +105,13 @@ namespace ZanoxDiscordBot.Modules
             return user.Roles.Contains(targetRole);
         }
 
+        [Command("!level")]
+        public async Task Level(uint xp)
+        {
+            uint level = 5;
+            await Context.Channel.SendMessageAsync($"{Context.User.Username} is level {level}!");
+        }
+
         [Command("!stats")]
         public async Task Stats([Remainder]string arg = "")
         {
@@ -112,13 +120,24 @@ namespace ZanoxDiscordBot.Modules
             target = mentionedUser ?? Context.User;
 
             var account = UserAccounts.GetAccount(target);
-            await Context.Channel.SendMessageAsync($"**{target.Username}** is level {account.Level} and has {account.XP} XP!");
+            var embed = new EmbedBuilder();
+            embed.WithTitle(target.Username + "'s Stats");
+            embed.WithDescription($"requested by {Context.User.Username}!");
+            embed.AddInlineField("Level", account.LevelNumber);
+            embed.AddInlineField("XP", account.XP);
+            embed.WithColor(new Color(0, 255, 255));
+            embed.WithThumbnailUrl(target.GetAvatarUrl());
+
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
 
         [Command("+xp")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task addXP(uint xp)
         {
+            SocketUser target = null;
+            var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
+            target = mentionedUser ?? Context.User;
             var u = Context.User as SocketGuildUser;
             var permission = u.GuildPermissions.Administrator;
             if (!permission)
@@ -129,13 +148,25 @@ namespace ZanoxDiscordBot.Modules
             var account = UserAccounts.GetAccount(Context.User);
             account.XP += xp;
             UserAccounts.SaveAccounts();
-            await Context.Channel.SendMessageAsync($"You have been given {xp} XP by {Context.User.Username}.");
+
+            var embed = new EmbedBuilder();
+            embed.WithTitle($"{target.Username}has been given {xp} XP");
+            embed.WithDescription($"by {Context.User.Username}.");
+            embed.AddInlineField("Level", account.LevelNumber);
+            embed.AddInlineField("XP", account.XP);
+            embed.WithColor(new Color(0, 255, 255));
+            embed.WithThumbnailUrl(target.GetAvatarUrl());
+
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
 
         [Command("-xp")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task removeXP(uint xp)
         {
+            SocketUser target = null;
+            var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
+            target = mentionedUser ?? Context.User;
             var u = Context.User as SocketGuildUser;
             var permission = u.GuildPermissions.Administrator;
             if (!permission)
@@ -146,7 +177,16 @@ namespace ZanoxDiscordBot.Modules
             var account = UserAccounts.GetAccount(Context.User);
             account.XP -= xp;
             UserAccounts.SaveAccounts();
-            await Context.Channel.SendMessageAsync($"You have been removed {xp} XP by {Context.User.Username}.");
+
+            var embed = new EmbedBuilder();
+            embed.WithTitle($"{target.Username}has been removed {xp} XP");
+            embed.WithDescription($"by {Context.User.Username}.");
+            embed.AddInlineField("Level", account.LevelNumber);
+            embed.AddInlineField("XP", account.XP);
+            embed.WithColor(new Color(0, 255, 255));
+            embed.WithThumbnailUrl(target.GetAvatarUrl());
+
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
 
         [Command("!profile")]
@@ -162,19 +202,10 @@ namespace ZanoxDiscordBot.Modules
             await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
 
-        [Command("!weather")]
-        public async Task Weather()
+            [Command("weather")]
+        public async Task Weather(string city)
         {
-            string json = "";
-            using (WebClient client = new WebClient())
-            {
-                json = client.DownloadString("https://samples.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=b6907d289e10d714a6e88b30761fae22");
-            }
-
-            var dataObject = JsonConvert.DeserializeObject<dynamic>(json);
-
-            string weather = dataObject.weather[0].weather.ToString();
-            await Context.Channel.SendMessageAsync($"The weather is {weather}!");
+            var apiUrl = $"api.openweathermap.org/data/2.5/weather?q={city}";
         }
     }
 }

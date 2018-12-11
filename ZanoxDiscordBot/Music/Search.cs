@@ -26,7 +26,7 @@ namespace ZanoxDiscordBot
     internal class Search
     {
         [STAThread]
-        static void Main(string[] args)
+        static void main(string[] args)
         {
             Console.WriteLine("YouTube Data API: Search");
             Console.WriteLine("========================");
