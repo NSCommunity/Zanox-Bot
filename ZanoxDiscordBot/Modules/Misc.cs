@@ -202,7 +202,41 @@ namespace ZanoxDiscordBot.Modules
             await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
 
-            [Command("weather")]
+        [Command("+rep")]
+        public async Task addRep(SocketUser target = null, [Remainder]string reason = "")
+        {
+            target = target ?? Context.User;
+
+            var account = UserAccounts.GetAccount(target);
+            account.Rep += 1;
+            UserAccounts.SaveAccounts();
+
+            var embed = new EmbedBuilder();
+            embed.WithTitle($"**{target.Username}** has been given 1 rep!By {Context.User.Username}!");
+            embed.WithDescription($"Reason: {reason}");
+            embed.WithColor(new Color(0, 255, 255));
+            embed.WithFooter(Context.User.GetAvatarUrl());
+            embed.WithCurrentTimestamp();
+        }
+
+        [Command("-rep")]
+        public async Task removeRep(SocketUser target = null, [Remainder]string reason = "")
+        {
+            target = target ?? Context.User;
+
+            var account = UserAccounts.GetAccount(target);
+            account.Rep -= 1;
+            UserAccounts.SaveAccounts();
+
+            var embed = new EmbedBuilder();
+            embed.WithTitle($"**{target.Username}** has been removed 1 rep! By {Context.User.Username}!");
+            embed.WithDescription($"Reason: {reason}");
+            embed.WithColor(new Color(0, 255, 255));
+            embed.WithFooter(Context.User.GetAvatarUrl());
+            embed.WithCurrentTimestamp();
+        }
+
+        [Command("weather")]
         public async Task Weather(string city)
         {
             var apiUrl = $"api.openweathermap.org/data/2.5/weather?q={city}";

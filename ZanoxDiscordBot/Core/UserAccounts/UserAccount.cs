@@ -12,6 +12,8 @@ namespace ZanoxDiscordBot.Core.UserAccounts
 
         public uint XP { get; set; }
 
+        public uint Rep { get; set; }
+
         public uint LevelNumber
         {
             get
