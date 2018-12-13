@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
-
+using System.IO;
 
 namespace ZanoxDiscordBot
 {
@@ -26,7 +26,8 @@ namespace ZanoxDiscordBot
                 LogLevel = LogSeverity.Verbose
             });
             _client.Log += Log;
-            await _client.LoginAsync(TokenType.Bot, Config.bot.token);
+            string hiddenToken = File.ReadLines("token.token").First();
+            await _client.LoginAsync(TokenType.Bot, hiddenToken);
             await _client.StartAsync();
             _handler = new CommandHandler();
             await _handler.InitializeAsync(_client);
