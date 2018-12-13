@@ -30,8 +30,16 @@ namespace ZanoxDiscordBot
             await _client.StartAsync();
             _handler = new CommandHandler();
             await _handler.InitializeAsync(_client);
+            _client.Ready += SetGame;
             await Task.Delay(-1);
         }
+
+            public async Task SetGame()
+        {
+            await _client.SetGameAsync("!help");
+        }
+
+        
 
         private async Task Log(LogMessage msg)
         {

@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 using System.Net.Http;
 
 namespace ZanoxDiscordBot.Modules
-{
+{ 
     public class Misc : ModuleBase<SocketCommandContext>
     {
         private bool UserIsZanoxAdmin(SocketGuildUser user)
@@ -27,6 +27,44 @@ namespace ZanoxDiscordBot.Modules
             var targetRole = user.Guild.GetRole(roleID);
             return user.Roles.Contains(targetRole);
         }
+            [Command("!game")]
+        public async Task Game([Remainder]string game)
+        {
+            if (!UserIsZanoxAdmin((SocketGuildUser)Context.User)) return;
+            await Context.Client.SetGameAsync(game);
+        }
+
+        [Command("!help")]
+        public async Task Help()
+        {
+            var embed = new EmbedBuilder();
+            embed.WithTitle($":mailbox_with_mail: The help message has been send to you in dms!");
+            embed.WithDescription("");
+            embed.WithColor(new Color(0, 255, 255));
+            embed.WithCurrentTimestamp();
+
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
+
+            var message = new EmbedBuilder();
+            embed.WithTitle($"Zanox Bot Help");
+            embed.WithDescription("Commands for Zanox");
+            embed.AddField($"Fun Commands!", "fun commands for Zanox");
+            embed.AddField($"!8ball", $"Chooses between an object | to seperate (!8ball {Context.User.Username}| Zanox Bot)");
+            embed.AddField($"!gotcha {Context.User.Username}", $"Send the tagged person a little suprise!");
+            embed.AddField($"Reputation", "reputation commands for Zanox");
+            embed.AddField($"+rep {Context.User.Username} reason", $"Adds a reputation point to the tagged member.");
+            embed.AddField($"-rep {Context.User.Username} reason", $"Removes a reputation point to the tagged member.");
+            embed.AddField($"!rep {Context.User.Username} reason", $"Check the amounts of rep points a person has.");
+            embed.AddField($"Levels", $"Level commands for Zanox");
+            embed.AddField($"!stats {Context.User.Username}", $"Check the Level and XP of a member.");
+            embed.WithColor(new Color(0, 255, 255));
+            embed.WithCurrentTimestamp();
+            embed.WithFooter(Context.User.GetAvatarUrl());
+
+            await Context.User.SendMessageAsync("", false, embed.Build());
+        }
+
+
 
         [Command("!announcement")]
         [RequireUserPermission(GuildPermission.Administrator)]
@@ -133,7 +171,7 @@ namespace ZanoxDiscordBot.Modules
 
         [Command("+xp")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task addXP(uint xp)
+        public async Task addXP(uint xp, string arg = "")
         {
             SocketUser target = null;
             var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
@@ -162,7 +200,7 @@ namespace ZanoxDiscordBot.Modules
 
         [Command("-xp")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task removeXP(uint xp)
+        public async Task removeXP(uint xp, string arg = "")
         {
             SocketUser target = null;
             var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
@@ -198,6 +236,24 @@ namespace ZanoxDiscordBot.Modules
             embed.WithColor(new Color(0, 255, 255));
             embed.WithFooter(Context.User.GetAvatarUrl());
             embed.WithCurrentTimestamp();
+
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
+        }
+
+        [Command("!rep")]
+        public async Task Rep([Remainder]string arg = "")
+        {
+            SocketUser target = null;
+            var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
+            target = mentionedUser ?? Context.User;
+
+            var account = UserAccounts.GetAccount(target);
+            var embed = new EmbedBuilder();
+            embed.WithTitle(target.Username + "'s Reputation");
+            embed.WithDescription($"requested by {Context.User.Username}!");
+            embed.AddField("Reputation Points", account.Rep);
+            embed.WithColor(new Color(0, 255, 255));
+            embed.WithThumbnailUrl(target.GetAvatarUrl());
 
             await Context.Channel.SendMessageAsync("", false, embed.Build());
         }

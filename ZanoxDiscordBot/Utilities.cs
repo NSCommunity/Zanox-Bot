@@ -23,6 +23,7 @@ namespace ZanoxDiscordBot
         {
             if (alerts.ContainsKey(key)) return alerts[key];
             return "";
+
         }
     }
 }
