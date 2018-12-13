@@ -302,7 +302,6 @@ namespace ZanoxDiscordBot.Modules
                 ContextUser = ContextUser.Remove(ContextUser.Length - 5, 5);
                 if (target.Username != ContextUser)
                 {
-                    Context.Channel.SendMessageAsync(ContextUser + target.Username);
                     if (Convert.ToInt32(unixT) - 600 > userCooldown)
                     {
                         target = target ?? Context.User;
@@ -355,7 +354,6 @@ namespace ZanoxDiscordBot.Modules
                 ContextUser = ContextUser.Remove(ContextUser.Length - 5, 5);
                 if (target.Username != ContextUser)
                 {
-                    Context.Channel.SendMessageAsync(ContextUser + target.Username);
                     if (Convert.ToInt32(unixT) - 600 > userCooldown)
                     {
                         target = target ?? Context.User;
