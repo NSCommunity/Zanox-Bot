@@ -26,7 +26,7 @@ namespace ZanoxDiscordBot
                 LogLevel = LogSeverity.Verbose
             });
             _client.Log += Log;
-            string hiddenToken = File.ReadLines("token.token").First();
+            string hiddenToken = File.ReadLines(@"Resources\token.token").First();
             await _client.LoginAsync(TokenType.Bot, hiddenToken);
             await _client.StartAsync();
             _handler = new CommandHandler();
