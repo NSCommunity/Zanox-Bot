@@ -28,6 +28,7 @@ namespace ZanoxDiscordBot.Modules
             return user.Roles.Contains(targetRole);
         }
             [Command("!game")]
+            [RequireUserPermission(GuildPermission.Administrator)]
         public async Task Game([Remainder]string game)
         {
             if (!UserIsZanoxAdmin((SocketGuildUser)Context.User)) return;
@@ -37,98 +38,109 @@ namespace ZanoxDiscordBot.Modules
         [Command("!help")]
         public async Task Help()
         {
-            var embed = new EmbedBuilder();
-            embed.WithTitle($":mailbox_with_mail: The help message has been send to you in dms!");
-            embed.WithDescription("");
-            embed.WithColor(new Color(0, 255, 255));
-            embed.WithCurrentTimestamp();
+            try {
+                var embed = new EmbedBuilder();
+                embed.WithTitle($":mailbox_with_mail: The help message has been send to you in dms!");
+                embed.WithDescription("");
+                embed.WithColor(new Color(0, 255, 255));
+                embed.WithCurrentTimestamp();
 
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+                await Context.Channel.SendMessageAsync("", false, embed.Build());
 
-            var message = new EmbedBuilder();
-            embed.WithTitle($"Zanox Bot Help");
-            embed.WithDescription("Commands for Zanox");
-            embed.AddField($"Fun Commands!", "fun commands for Zanox");
-            embed.AddField($"!8ball", $"Chooses between an object | to seperate (!8ball {Context.User.Username}| Zanox Bot)");
-            embed.AddField($"!gotcha {Context.User.Username}", $"Send the tagged person a little suprise!");
-            embed.AddField($"Reputation", "reputation commands for Zanox");
-            embed.AddField($"+rep {Context.User.Username} reason", $"Adds a reputation point to the tagged member.");
-            embed.AddField($"-rep {Context.User.Username} reason", $"Removes a reputation point to the tagged member.");
-            embed.AddField($"!rep {Context.User.Username} reason", $"Check the amounts of rep points a person has.");
-            embed.AddField($"Levels", $"Level commands for Zanox");
-            embed.AddField($"!stats {Context.User.Username}", $"Check the Level and XP of a member.");
-            embed.WithColor(new Color(0, 255, 255));
-            embed.WithCurrentTimestamp();
-            embed.WithFooter(Context.User.GetAvatarUrl());
+                var message = new EmbedBuilder();
+                embed.WithTitle($"Zanox Bot Help");
+                embed.WithDescription("Commands for Zanox");
+                embed.AddField($"Fun Commands!", "fun commands for Zanox");
+                embed.AddField($"!8ball", $"Chooses between an object | to seperate (!8ball {Context.User.Username}| Zanox Bot)");
+                embed.AddField($"!gotcha {Context.User.Username}", $"Send the tagged person a little suprise!");
+                embed.AddField($"Reputation", "reputation commands for Zanox");
+                embed.AddField($"+rep {Context.User.Username} reason", $"Adds a reputation point to the tagged member.");
+                embed.AddField($"-rep {Context.User.Username} reason", $"Removes a reputation point to the tagged member.");
+                embed.AddField($"!rep {Context.User.Username} reason", $"Check the amounts of rep points a person has.");
+                embed.AddField($"Levels", $"Level commands for Zanox");
+                embed.AddField($"!stats {Context.User.Username}", $"Check the Level and XP of a member.");
+                embed.WithColor(new Color(0, 255, 255));
+                embed.WithCurrentTimestamp();
+                embed.WithFooter(Context.User.GetAvatarUrl());
 
-            await Context.User.SendMessageAsync("", false, embed.Build());
+                await Context.User.SendMessageAsync("", false, embed.Build());
+            } catch { }
         }
-
-
-
+        
         [Command("!announcement")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task Announcement([Remainder]string message)
         {
-            var u = Context.User as SocketGuildUser;
-            var permission = u.GuildPermissions.Administrator;
-            if (!permission)
+            try
             {
-                await Context.Channel.SendMessageAsync(":x: You do not have permission to use this command " + Context.User.Mention + "!");
-                return;
-            }
-            var embed = new EmbedBuilder();
-            embed.WithTitle("announcement by " + Context.User.Username);
-            embed.WithDescription(message);
-            embed.WithColor(new Color(0, 255, 0));
-            await Context.Message.DeleteAsync();
-            embed.WithThumbnailUrl(Context.User.GetAvatarUrl());
+                var u = Context.User as SocketGuildUser;
+                var permission = u.GuildPermissions.Administrator;
+                if (!permission)
+                {
+                    await Context.Channel.SendMessageAsync(":x: You do not have permission to use this command " + Context.User.Mention + "!");
+                    return;
+                }
+                var embed = new EmbedBuilder();
+                embed.WithTitle("announcement by " + Context.User.Username);
+                embed.WithDescription(message);
+                embed.WithColor(new Color(0, 255, 0));
+                await Context.Message.DeleteAsync();
+                embed.WithThumbnailUrl(Context.User.GetAvatarUrl());
 
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
-            await Task.Delay(3000);
-            await Context.Channel.SendMessageAsync("@everyone");
+                await Context.Channel.SendMessageAsync("", false, embed.Build());
+                await Task.Delay(3000);
+                await Context.Channel.SendMessageAsync("@everyone");
+            } catch { }
         }
 
         [Command("!say")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task Say([Remainder]string message)
         {
-            var u = Context.User as SocketGuildUser;
-            var permission = u.GuildPermissions.Administrator;
-            if (!permission)
+            try
             {
-                await Context.Channel.SendMessageAsync(":x: You do not have permission to use this command " + Context.User.Mention + "!");
-                return;
-            }
-            await Context.Message.DeleteAsync();
-            await Context.Channel.SendMessageAsync(message);
+                var u = Context.User as SocketGuildUser;
+                var permission = u.GuildPermissions.Administrator;
+                if (!permission)
+                {
+                    await Context.Channel.SendMessageAsync(":x: You do not have permission to use this command " + Context.User.Mention + "!");
+                    return;
+                }
+                await Context.Message.DeleteAsync();
+                await Context.Channel.SendMessageAsync(message);
+            } catch { }
         }
 
         [Command("!8ball")]
         public async Task EightBall([Remainder]string message)
         {
+            try
+            {
+                string[] options = message.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
 
-            string[] options = message.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                Random r = new Random();
+                string selection = options[r.Next(0, options.Length)];
 
-            Random r = new Random();
-            string selection = options[r.Next(0, options.Length)];
+                var embed = new EmbedBuilder();
+                embed.WithTitle(Context.User.Username + " I choose...");
+                embed.WithDescription(selection);
+                embed.WithColor(new Color(0, 255, 255));
+                embed.WithThumbnailUrl(Context.User.GetAvatarUrl());
 
-            var embed = new EmbedBuilder();
-            embed.WithTitle(Context.User.Username + " I choose...");
-            embed.WithDescription(selection);
-            embed.WithColor(new Color(0, 255, 255));
-            embed.WithThumbnailUrl(Context.User.GetAvatarUrl());
-
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+                await Context.Channel.SendMessageAsync("", false, embed.Build());
+            } catch { }
         }
 
         [Command("!key")]
         public async Task SecretKey()
         {
-            if (!UserIsZanoxAdmin((SocketGuildUser)Context.User)) return;
-            var dmChannel = await Context.User.GetOrCreateDMChannelAsync();
-            await dmChannel.SendMessageAsync(Utilities.GetAlert("KEY"));
-            await Context.Message.DeleteAsync();
+            try
+            {
+                if (!UserIsZanoxAdmin((SocketGuildUser)Context.User)) return;
+                var dmChannel = await Context.User.GetOrCreateDMChannelAsync();
+                await dmChannel.SendMessageAsync(Utilities.GetAlert("KEY"));
+                await Context.Message.DeleteAsync();
+            } catch { }
         }
 
         private bool UserIsZanox(SocketGuildUser user)
@@ -146,195 +158,296 @@ namespace ZanoxDiscordBot.Modules
         [Command("!level")]
         public async Task Level(uint xp)
         {
-            uint level = 5;
-            await Context.Channel.SendMessageAsync($"{Context.User.Username} is level {level}!");
+            try
+            {
+                uint level = 5;
+                await Context.Channel.SendMessageAsync($"{Context.User.Username} is level {level}!");
+            } catch { }
         }
 
         [Command("!stats")]
         public async Task Stats([Remainder]string arg = "")
         {
-            SocketUser target = null;
-            var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
-            target = mentionedUser ?? Context.User;
+            try
+            {
+                SocketUser target = null;
+                var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
+                target = mentionedUser ?? Context.User;
 
-            var account = UserAccounts.GetAccount(target);
-            var embed = new EmbedBuilder();
-            embed.WithTitle(target.Username + "'s Stats");
-            embed.WithDescription($"requested by {Context.User.Username}!");
-            embed.AddInlineField("Level", account.LevelNumber);
-            embed.AddInlineField("XP", account.XP);
-            embed.WithColor(new Color(0, 255, 255));
-            embed.WithThumbnailUrl(target.GetAvatarUrl());
+                var account = UserAccounts.GetAccount(target);
+                var embed = new EmbedBuilder();
+                embed.WithTitle(target.Username + "'s Stats");
+                embed.WithDescription($"requested by {Context.User.Username}!");
+                embed.AddInlineField("Level", account.LevelNumber);
+                embed.AddInlineField("XP", account.XP);
+                embed.WithColor(new Color(0, 255, 255));
+                embed.WithThumbnailUrl(target.GetAvatarUrl());
 
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+                await Context.Channel.SendMessageAsync("", false, embed.Build());
+            } catch { }
         }
 
         [Command("+xp")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task addXP(uint xp, string arg = "")
         {
-            SocketUser target = null;
-            var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
-            target = mentionedUser ?? Context.User;
-            var u = Context.User as SocketGuildUser;
-            var permission = u.GuildPermissions.Administrator;
-            if (!permission)
+            try
             {
-                await Context.Channel.SendMessageAsync(":x: You do not have permission to use this command " + Context.User.Mention + "!");
-                return;
-            }
-            var account = UserAccounts.GetAccount(Context.User);
-            account.XP += xp;
-            UserAccounts.SaveAccounts();
+                SocketUser target = null;
+                var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
+                target = mentionedUser ?? Context.User;
+                var u = Context.User as SocketGuildUser;
+                var permission = u.GuildPermissions.Administrator;
+                if (!permission)
+                {
+                    await Context.Channel.SendMessageAsync(":x: You do not have permission to use this command " + Context.User.Mention + "!");
+                    return;
+                }
+                var account = UserAccounts.GetAccount(Context.User);
+                account.XP += xp;
+                UserAccounts.SaveAccounts();
 
-            var embed = new EmbedBuilder();
-            embed.WithTitle($"{target.Username}has been given {xp} XP");
-            embed.WithDescription($"by {Context.User.Username}.");
-            embed.AddInlineField("Level", account.LevelNumber);
-            embed.AddInlineField("XP", account.XP);
-            embed.WithColor(new Color(0, 255, 255));
-            embed.WithThumbnailUrl(target.GetAvatarUrl());
+                var embed = new EmbedBuilder();
+                embed.WithTitle($"{target.Username}has been given {xp} XP");
+                embed.WithDescription($"by {Context.User.Username}.");
+                embed.AddInlineField("Level", account.LevelNumber);
+                embed.AddInlineField("XP", account.XP);
+                embed.WithColor(new Color(0, 255, 255));
+                embed.WithThumbnailUrl(target.GetAvatarUrl());
 
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+                await Context.Channel.SendMessageAsync("", false, embed.Build());
+            } catch { }
         }
 
         [Command("-xp")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task removeXP(uint xp, string arg = "")
         {
-            SocketUser target = null;
-            var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
-            target = mentionedUser ?? Context.User;
-            var u = Context.User as SocketGuildUser;
-            var permission = u.GuildPermissions.Administrator;
-            if (!permission)
+            try
             {
-                await Context.Channel.SendMessageAsync(":x: You do not have permission to use this command " + Context.User.Mention + "!");
-                return;
-            }
-            var account = UserAccounts.GetAccount(Context.User);
-            account.XP -= xp;
-            UserAccounts.SaveAccounts();
+                SocketUser target = null;
+                var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
+                target = mentionedUser ?? Context.User;
+                var u = Context.User as SocketGuildUser;
+                var permission = u.GuildPermissions.Administrator;
+                if (!permission)
+                {
+                    await Context.Channel.SendMessageAsync(":x: You do not have permission to use this command " + Context.User.Mention + "!");
+                    return;
+                }
+                var account = UserAccounts.GetAccount(Context.User);
+                account.XP -= xp;
+                UserAccounts.SaveAccounts();
 
-            var embed = new EmbedBuilder();
-            embed.WithTitle($"{target.Username}has been removed {xp} XP");
-            embed.WithDescription($"by {Context.User.Username}.");
-            embed.AddInlineField("Level", account.LevelNumber);
-            embed.AddInlineField("XP", account.XP);
-            embed.WithColor(new Color(0, 255, 255));
-            embed.WithThumbnailUrl(target.GetAvatarUrl());
+                var embed = new EmbedBuilder();
+                embed.WithTitle($"{target.Username}has been removed {xp} XP");
+                embed.WithDescription($"by {Context.User.Username}.");
+                embed.AddInlineField("Level", account.LevelNumber);
+                embed.AddInlineField("XP", account.XP);
+                embed.WithColor(new Color(0, 255, 255));
+                embed.WithThumbnailUrl(target.GetAvatarUrl());
 
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+                await Context.Channel.SendMessageAsync("", false, embed.Build());
+            } catch { }
         }
 
         [Command("!profile")]
         public async Task ProfileTest([Remainder]string arg = "")
         {
-            var embed = new EmbedBuilder();
-            embed.WithTitle($"**{Context.User.Username}'s** Profile!");
-            embed.WithDescription("");
-            embed.WithColor(new Color(0, 255, 255));
-            embed.WithFooter(Context.User.GetAvatarUrl());
-            embed.WithCurrentTimestamp();
+            try
+            {
+                var embed = new EmbedBuilder();
+                embed.WithTitle($"**{Context.User.Username}'s** Profile!");
+                embed.WithDescription("");
+                embed.WithColor(new Color(0, 255, 255));
+                embed.WithFooter(Context.User.GetAvatarUrl());
+                embed.WithCurrentTimestamp();
 
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+                await Context.Channel.SendMessageAsync("", false, embed.Build());
+            } catch { }
         }
 
         [Command("!rep")]
         public async Task Rep([Remainder]string arg = "")
         {
-            SocketUser target = null;
-            var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
-            target = mentionedUser ?? Context.User;
+            try
+            {
+                SocketUser target = null;
+                var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
+                target = mentionedUser ?? Context.User;
 
-            var account = UserAccounts.GetAccount(target);
-            var embed = new EmbedBuilder();
-            embed.WithTitle(target.Username + "'s Reputation");
-            embed.WithDescription($"requested by {Context.User.Username}!");
-            embed.AddField("Reputation Points", account.Rep);
-            embed.WithColor(new Color(0, 255, 255));
-            embed.WithThumbnailUrl(target.GetAvatarUrl());
+                var account = UserAccounts.GetAccount(target);
+                var embed = new EmbedBuilder();
+                embed.WithTitle(target.Username + "'s Reputation");
+                embed.WithDescription($"requested by {Context.User.Username}!");
+                embed.AddField("Reputation Points", account.Rep);
+                embed.WithColor(new Color(0, 255, 255));
+                embed.WithThumbnailUrl(target.GetAvatarUrl());
 
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+                await Context.Channel.SendMessageAsync("", false, embed.Build());
+            } catch { }
         }
 
         [Command("+rep")]
         public async Task addRep(SocketUser target = null, [Remainder]string reason = "")
         {
-            target = target ?? Context.User;
+            try
+            {
+                var account = UserAccounts.GetAccount(Context.User);
+                string unixT = (Convert.ToString((DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds));
+                unixT = unixT.Remove(10, unixT.Length - 10);
+                int userCooldown = account.repCooldown;
 
-            var account = UserAccounts.GetAccount(target);
-            account.Rep += 1;
-            UserAccounts.SaveAccounts();
+                string ContextUser = Convert.ToString(Context.User);
+                ContextUser = ContextUser.Remove(ContextUser.Length - 5, 5);
+                if (target.Username != ContextUser)
+                {
+                    Context.Channel.SendMessageAsync(ContextUser + target.Username);
+                    if (Convert.ToInt32(unixT) - 600 > userCooldown)
+                    {
+                        target = target ?? Context.User;
 
-            var embed = new EmbedBuilder();
-            embed.WithTitle($"**{target.Username}** has been given 1 rep! By {Context.User.Username}!");
-            embed.WithDescription($"Reason: {reason}");
-            embed.WithColor(new Color(0, 255, 255));
-            embed.WithCurrentTimestamp();
+                        account.Rep += 1;
+                        UserAccounts.SaveAccounts();
 
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+                        var embed = new EmbedBuilder();
+                        embed.WithTitle($"**{target.Username}** has been given 1 rep! By {Context.User.Username}!");
+                        embed.WithDescription($"Reason: {reason}");
+                        embed.WithColor(new Color(0, 255, 255));
+                        embed.WithCurrentTimestamp();
+                        account.repCooldown = Convert.ToInt32(unixT);
+
+                        Context.Channel.SendMessageAsync("", false, embed.Build());
+                    }
+                    else
+                    {
+                        var embed = new EmbedBuilder();
+                        embed.WithTitle($"You're still on cooldown! " + ((userCooldown - Convert.ToInt32(unixT)) + 600) + " seconds left");
+                        embed.WithColor(new Color(0, 255, 255));
+                        embed.WithCurrentTimestamp();
+
+                        Context.Channel.SendMessageAsync("", false, embed.Build());
+                    }
+                }
+                else
+                {
+                    var embed = new EmbedBuilder();
+                    embed.WithTitle($"You can't give yourself rep!");
+                    embed.WithColor(new Color(0, 255, 255));
+                    embed.WithCurrentTimestamp();
+
+                    Context.Channel.SendMessageAsync("", false, embed.Build());
+                }
+            } catch { }
         }
 
         [Command("-rep")]
         public async Task removeRep(SocketUser target = null, [Remainder]string reason = "")
         {
-            target = target ?? Context.User;
+            try
+            {
+                var account = UserAccounts.GetAccount(Context.User);
+                string unixT = (Convert.ToString((DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds));
+                unixT = unixT.Remove(10, unixT.Length - 10);
+                int userCooldown = account.repCooldown;
 
-            var account = UserAccounts.GetAccount(target);
-            account.Rep -= 1;
-            UserAccounts.SaveAccounts();
+                string ContextUser = Convert.ToString(Context.User);
+                ContextUser = ContextUser.Remove(ContextUser.Length - 5, 5);
+                if (target.Username != ContextUser)
+                {
+                    Context.Channel.SendMessageAsync(ContextUser + target.Username);
+                    if (Convert.ToInt32(unixT) - 600 > userCooldown)
+                    {
+                        target = target ?? Context.User;
 
-            var embed = new EmbedBuilder();
-            embed.WithTitle($"**{target.Username}** has been removed 1 rep! By {Context.User.Username}!");
-            embed.WithDescription($"Reason: {reason}");
-            embed.WithColor(new Color(0, 255, 255));
-            embed.WithCurrentTimestamp();
+                        account.Rep -= 1;
+                        UserAccounts.SaveAccounts();
 
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+                        var embed = new EmbedBuilder();
+                        embed.WithTitle($"**{target.Username}** has been gave negative 1 rep! By {Context.User.Username}!");
+                        embed.WithDescription($"Reason: {reason}");
+                        embed.WithColor(new Color(0, 255, 255));
+                        embed.WithCurrentTimestamp();
+                        account.repCooldown = Convert.ToInt32(unixT);
+
+                        Context.Channel.SendMessageAsync("", false, embed.Build());
+                    }
+                    else
+                    {
+                        var embed = new EmbedBuilder();
+                        embed.WithTitle($"You're still on cooldown! " + ((userCooldown - Convert.ToInt32(unixT)) + 600) + " seconds left");
+                        embed.WithColor(new Color(0, 255, 255));
+                        embed.WithCurrentTimestamp();
+
+                        Context.Channel.SendMessageAsync("", false, embed.Build());
+                    }
+                }
+                else
+                {
+                    var embed = new EmbedBuilder();
+                    embed.WithTitle($"You can't take away your own rep!");
+                    embed.WithColor(new Color(0, 255, 255));
+                    embed.WithCurrentTimestamp();
+
+                    Context.Channel.SendMessageAsync("", false, embed.Build());
+                }
+            }
+            catch { }
         }
 
         [Command("weather")]
         public async Task Weather(string city)
         {
-            var apiUrl = $"api.openweathermap.org/data/2.5/weather?q={city}";
+            try
+            {
+                var apiUrl = $"api.openweathermap.org/data/2.5/weather?q={city}";
+            } catch { }
         }
 
         [Command("!gotcha")]
         public async Task Gotcha(SocketUser target = null)
         {
-            target = target ?? Context.User;
-
-            var account = UserAccounts.GetAccount(Context.User);
-            string unixT = (Convert.ToString((DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds));
-            unixT = unixT.Remove(10, unixT.Length - 10);
-            int userCooldown = account.GCooldown;
-            if (Convert.ToInt32(unixT) - 600 > userCooldown)
+            try
             {
-                await target.SendMessageAsync($"**{Context.User.Username}** Gotcha!");
-                target.SendMessageAsync($"⠀⠀⠀⠀⠀⡼⡑⢅⠪⡐⠅⠪⡐⢌⠢⡑⠌⡢⢑⠌⠢⡑⠌⡢⠑⢌⠢⠑⡌⠰⡁⡣⢘⠵⢦⡀\n⠀⠀⠀⠀⢰⢍⠊⠔⠡⡈⠜⡠⠑⠄⢅⠌⡂⠢⡁⢊⠢⠘⢄⠊⢌⠂⢅⢑⢈⠢⡨⠠⡑⠨⠢⡫⡆\n⠀⠀⠀⠀⡗⢅⠑⡁⡑⠠⠊⡀⡑⠌⠐⠄⢊⠐⡨⠀⢅⠊⡠⠊⠠⠊⡠⠂⡁⠢⠐⡐⢈⠂⡑⢄⢙⢇⡀\n⠀⠀⠀⡸⡑⢌⠐⠄⢌⠐⡁⠔⢀⠊⡨⠠⢁⠢⢀⠑⠠⢂⠐⠌⡐⢁⠄⠌⠠⢁⠌⠠⠁⠔⢀⠢⢀⠣⢳⢄\n⠀⠀⢠⠫⡂⠔⢁⠂⠢⠐⡀⢊⠠⠂⡐⢐⠀⡂⢁⠈⠢⠠⡈⠄⠢⡀⢆⢨⢂⠔⡀⢅⠈⠂⠔⢀⠅⡐⢁⠫⣆\n⠀⢀⢏⠪⢀⠊⡠⠈⢄⠡⠐⡀⠢⢈⠠⠂⠨⢀⠂⡁⡊⣐⢄⣳⠕⠯⠚⠓⠛⠚⠶⣄⠅⡡⠈⢄⠐⠠⢁⠊⡜⣥⠀\n⠀⣜⠥⡑⠠⠂⡐⠈⠄⠄⡡⠠⢁⠂⠄⡑⠠⢁⢌⢔⢮⠎⠋⠁⠀⠀⠀⠀⠀⠀⠀⠑⢧⠐⡡⠠⢈⠂⢄⠡⡈⢮⡀\n⠰⣝⢆⠢⠁⠂⠌⠠⠑⡀⢂⠐⠄⡈⡐⢀⠑⢤⡳⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢙⡬⡀⠂⠔⢀⠢⠐⡈⢎⡇\n⢘⢮⡣⡂⠡⢁⠊⠠⠁⠔⢀⠁⠢⠐⡀⢅⠈⡲⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢷⡨⠨⡀⠅⢐⠈⠄⢪⢖\n⠈⡮⡳⡕⡡⢀⠊⠠⠑⠈⢄⠁⡊⢀⠢⠠⢈⠌⠳⡔⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢳⢕⢄⠑⢄⢈⠢⡁⢯⡂\n⠘⡮⡹⣖⠤⡁⢊⠠⠑⡀⠂⠔⢀⠂⠢⠠⢈⠂⠔⠠⡑⠝⢖⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠳⢝⣔⢦⡱⣜⠵⠃\n⠀⠸⡢⡊⡛⢼⢔⡄⡡⠠⢁⠌⠠⡈⢄⠁⠂⠌⠠⡁⠔⢈⠂⡙⢕⠢⠲⠪⡚⠪⠪⡋⢚⠕⡫⡲⡀⠀⠁⠈\n⠀⠀⠳⡨⢂⠡⠊⡱⠳⠶⣄⣊⠠⠂⠄⢊⠈⢄⠡⠐⡀⠅⡈⠄⢂⠁⡑⠄⠌⡐⠁⠌⠐⠄⡊⢨⡛⡄\n⠀⠀⠈⢕⠔⡀⠊⠠⡈⠢⡑⢍⡳⣳⢜⡤⣌⠠⢂⠂⠔⢀⠢⠈⠄⢂⠐⡈⠄⠨⡀⠅⠑⡠⢈⢆⡽⠁\n⠀⠀⠀⠨⢆⠌⡈⠐⠄⠡⠐⡡⢪⢗⢽⠆⠉⠙⠣⠷⣜⡤⡢⡡⡨⡀⡢⢐⢈⠔⡠⣊⢦⣪⠖⠏\n⠀ ⠀⠀⠀⠳⡨⡀⡑⢈⠂⡡⠐⢌⡷⣙⢖⣄⠀⠀⠀⠀⠈⠉⠙⠚⠚⠪⠳⠓⠋⠋⠁⠁\n⠀ ⠀⠀⠀⠈⢖⠄⠢⠐⠠⠂⢌⠠⢛⢮⡪⡜⣕⡀\n⠀⠀⠀⠀⠀⠀⠘⣎⢐⠡⢈⠂⠢⠐⡁⢝⢮⡪⡢⡹⣂\n⠀⠀⠀⠀⠀⠀⠀⠸⣢⠡⢂⢈⠐⡁⠔⠠⢓⢵⡪⢢⠑⡝⢢⣄\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠫⡢⠄⢌⢀⠊⡐⠡⢊⢷⡑⡌⡐⠡⡘⢦⡀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⡔⢢⢀⠊⢄⠑⠔⡡⢻⡔⢌⠂⡕⡸⠆\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⡢⡡⡨⠠⡑⠌⡢⢑⠽⣪⡪⣢⠏\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢲⢐⠅⠢⡑⠨⡢⣙⢜\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢕⡕⡡⢊⠒⢔⢌⡗\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠕⡵⣩⡲⡕");
-                if (target == Context.User)
-                    account.GCooldown = Convert.ToInt32(unixT);
-                Context.Channel.SendMessageAsync("Sending gotcha to " + target + "!");
-            } else {
-                await Context.Channel.SendMessageAsync("Still on cooldown. " + ((userCooldown - Convert.ToInt32(unixT)) + 600) + " seconds left");
-            }
+                target = target ?? Context.User;
+
+                var account = UserAccounts.GetAccount(Context.User);
+                string unixT = (Convert.ToString((DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds));
+                unixT = unixT.Remove(10, unixT.Length - 10);
+                int userCooldown = account.GCooldown;
+                if (Convert.ToInt32(unixT) - 600 > userCooldown || target == Context.User)
+                {
+                    await target.SendMessageAsync($"**{Context.User.Username}** Gotcha!");
+                    target.SendMessageAsync($"⠀⠀⠀⠀⠀⡼⡑⢅⠪⡐⠅⠪⡐⢌⠢⡑⠌⡢⢑⠌⠢⡑⠌⡢⠑⢌⠢⠑⡌⠰⡁⡣⢘⠵⢦⡀\n⠀⠀⠀⠀⢰⢍⠊⠔⠡⡈⠜⡠⠑⠄⢅⠌⡂⠢⡁⢊⠢⠘⢄⠊⢌⠂⢅⢑⢈⠢⡨⠠⡑⠨⠢⡫⡆\n⠀⠀⠀⠀⡗⢅⠑⡁⡑⠠⠊⡀⡑⠌⠐⠄⢊⠐⡨⠀⢅⠊⡠⠊⠠⠊⡠⠂⡁⠢⠐⡐⢈⠂⡑⢄⢙⢇⡀\n⠀⠀⠀⡸⡑⢌⠐⠄⢌⠐⡁⠔⢀⠊⡨⠠⢁⠢⢀⠑⠠⢂⠐⠌⡐⢁⠄⠌⠠⢁⠌⠠⠁⠔⢀⠢⢀⠣⢳⢄\n⠀⠀⢠⠫⡂⠔⢁⠂⠢⠐⡀⢊⠠⠂⡐⢐⠀⡂⢁⠈⠢⠠⡈⠄⠢⡀⢆⢨⢂⠔⡀⢅⠈⠂⠔⢀⠅⡐⢁⠫⣆\n⠀⢀⢏⠪⢀⠊⡠⠈⢄⠡⠐⡀⠢⢈⠠⠂⠨⢀⠂⡁⡊⣐⢄⣳⠕⠯⠚⠓⠛⠚⠶⣄⠅⡡⠈⢄⠐⠠⢁⠊⡜⣥⠀\n⠀⣜⠥⡑⠠⠂⡐⠈⠄⠄⡡⠠⢁⠂⠄⡑⠠⢁⢌⢔⢮⠎⠋⠁⠀⠀⠀⠀⠀⠀⠀⠑⢧⠐⡡⠠⢈⠂⢄⠡⡈⢮⡀\n⠰⣝⢆⠢⠁⠂⠌⠠⠑⡀⢂⠐⠄⡈⡐⢀⠑⢤⡳⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢙⡬⡀⠂⠔⢀⠢⠐⡈⢎⡇\n⢘⢮⡣⡂⠡⢁⠊⠠⠁⠔⢀⠁⠢⠐⡀⢅⠈⡲⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢷⡨⠨⡀⠅⢐⠈⠄⢪⢖\n⠈⡮⡳⡕⡡⢀⠊⠠⠑⠈⢄⠁⡊⢀⠢⠠⢈⠌⠳⡔⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢳⢕⢄⠑⢄⢈⠢⡁⢯⡂\n⠘⡮⡹⣖⠤⡁⢊⠠⠑⡀⠂⠔⢀⠂⠢⠠⢈⠂⠔⠠⡑⠝⢖⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠳⢝⣔⢦⡱⣜⠵⠃\n⠀⠸⡢⡊⡛⢼⢔⡄⡡⠠⢁⠌⠠⡈⢄⠁⠂⠌⠠⡁⠔⢈⠂⡙⢕⠢⠲⠪⡚⠪⠪⡋⢚⠕⡫⡲⡀⠀⠁⠈\n⠀⠀⠳⡨⢂⠡⠊⡱⠳⠶⣄⣊⠠⠂⠄⢊⠈⢄⠡⠐⡀⠅⡈⠄⢂⠁⡑⠄⠌⡐⠁⠌⠐⠄⡊⢨⡛⡄\n⠀⠀⠈⢕⠔⡀⠊⠠⡈⠢⡑⢍⡳⣳⢜⡤⣌⠠⢂⠂⠔⢀⠢⠈⠄⢂⠐⡈⠄⠨⡀⠅⠑⡠⢈⢆⡽⠁\n⠀⠀⠀⠨⢆⠌⡈⠐⠄⠡⠐⡡⢪⢗⢽⠆⠉⠙⠣⠷⣜⡤⡢⡡⡨⡀⡢⢐⢈⠔⡠⣊⢦⣪⠖⠏\n⠀ ⠀⠀⠀⠳⡨⡀⡑⢈⠂⡡⠐⢌⡷⣙⢖⣄⠀⠀⠀⠀⠈⠉⠙⠚⠚⠪⠳⠓⠋⠋⠁⠁\n⠀ ⠀⠀⠀⠈⢖⠄⠢⠐⠠⠂⢌⠠⢛⢮⡪⡜⣕⡀\n⠀⠀⠀⠀⠀⠀⠘⣎⢐⠡⢈⠂⠢⠐⡁⢝⢮⡪⡢⡹⣂\n⠀⠀⠀⠀⠀⠀⠀⠸⣢⠡⢂⢈⠐⡁⠔⠠⢓⢵⡪⢢⠑⡝⢢⣄\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠫⡢⠄⢌⢀⠊⡐⠡⢊⢷⡑⡌⡐⠡⡘⢦⡀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⡔⢢⢀⠊⢄⠑⠔⡡⢻⡔⢌⠂⡕⡸⠆\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⡢⡡⡨⠠⡑⠌⡢⢑⠽⣪⡪⣢⠏\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢲⢐⠅⠢⡑⠨⡢⣙⢜\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢕⡕⡡⢊⠒⢔⢌⡗\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠕⡵⣩⡲⡕");
+                    if (target != Context.User)
+                        account.GCooldown = Convert.ToInt32(unixT);
+                    var embed = new EmbedBuilder();
+                    embed.WithTitle($":mailbox: **{target.Username}** you have a suprise waiting for you in dms!");
+                    string fromUser = Convert.ToString(Context.User);
+                    fromUser = fromUser.Remove(fromUser.Length - 5, 5);
+                    embed.WithDescription($"from " + fromUser);
+                    embed.WithColor(new Color(0, 255, 255));
+                    embed.WithCurrentTimestamp();
+
+                    await Context.Channel.SendMessageAsync("", false, embed.Build());
+                }
+                else
+                {
+                    await Context.Channel.SendMessageAsync("Still on cooldown. " + ((userCooldown - Convert.ToInt32(unixT)) + 600) + " seconds left");
+                }
+            } catch { }
         }
 
         [Command("!unix")]
         public async Task unixTime()
         {
-            await Task.Delay(0);
-            string unixT = (Convert.ToString((DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds));
-            unixT = unixT.Remove(10, unixT.Length - 10);
-            await Context.Channel.SendMessageAsync(unixT);
-        }
-
-        [Command("!removeCooldown")]
-        public async Task rCooldown()
-        {
-            var account = UserAccounts.GetAccount(Context.User);
-            account.GCooldown = 0;
+            try
+            {
+                await Task.Delay(0);
+                string unixT = (Convert.ToString((DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds));
+                unixT = unixT.Remove(10, unixT.Length - 10);
+                await Context.Channel.SendMessageAsync(unixT);
+            } catch { }
         }
     }
 }

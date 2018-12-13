@@ -18,6 +18,8 @@ namespace ZanoxDiscordBot.Core.UserAccounts
 
         public int GCooldown { get; set; }
 
+        public int repCooldown { get; set; }
+
         public uint LevelNumber
         {
             get
