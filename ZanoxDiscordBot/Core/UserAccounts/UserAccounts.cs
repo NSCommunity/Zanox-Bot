@@ -52,7 +52,8 @@ namespace ZanoxDiscordBot.Core.UserAccounts
             var newAccount = new UserAccount()
             {
                 ID = id,
-                XP = 0
+                XP = 0,
+                GCooldown = 0
             };
 
             accounts.Add(newAccount);

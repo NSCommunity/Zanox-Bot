@@ -326,3 +326,5 @@ ASALocalRun/
 .vs/EasyAuthenticator/v15/.suo
 *.cache
 *.json
+*.token
+config.json
