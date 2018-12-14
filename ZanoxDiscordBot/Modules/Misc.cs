@@ -27,11 +27,17 @@ namespace ZanoxDiscordBot.Modules
             var targetRole = user.Guild.GetRole(roleID);
             return user.Roles.Contains(targetRole);
         }
+<<<<<<< HEAD
 
         [Command("!warn")]
         [RequireUserPermission(GuildPermission.Administrator)]
         [RequireBotPermission(GuildPermission.BanMembers)]
         public async Task WarnUser(IGuildUser user, string reason = "No Reason Provided.")
+=======
+            [Command("!game")]
+            [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task Game([Remainder]string game)
+>>>>>>> 8ef9413b8526888c5aea595236ee1e1c1412c848
         {
             var userAccount = UserAccounts.GetAccount((SocketUser)user);
             userAccount.NumberOfWarnings++;
@@ -67,6 +73,7 @@ namespace ZanoxDiscordBot.Modules
         [RequireBotPermission(GuildPermission.KickMembers)]
         public async Task KickUser(IGuildUser user, string reason = "No Reason Provided.")
         {
+<<<<<<< HEAD
             SocketUser target = null;
             var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
             target = mentionedUser ?? Context.User;
@@ -145,6 +152,37 @@ namespace ZanoxDiscordBot.Modules
             catch { }
         }
 
+=======
+            try {
+                var embed = new EmbedBuilder();
+                embed.WithTitle($":mailbox_with_mail: The help message has been send to you in dms!");
+                embed.WithDescription("");
+                embed.WithColor(new Color(0, 255, 255));
+                embed.WithCurrentTimestamp();
+
+                await Context.Channel.SendMessageAsync("", false, embed.Build());
+
+                var message = new EmbedBuilder();
+                embed.WithTitle($"Zanox Bot Help");
+                embed.WithDescription("Commands for Zanox");
+                embed.AddField($"Fun Commands!", "fun commands for Zanox");
+                embed.AddField($"!8ball", $"Chooses between an object | to seperate (!8ball {Context.User.Username}| Zanox Bot)");
+                embed.AddField($"!gotcha {Context.User.Username}", $"Send the tagged person a little suprise!");
+                embed.AddField($"Reputation", "reputation commands for Zanox");
+                embed.AddField($"+rep {Context.User.Username} reason", $"Adds a reputation point to the tagged member.");
+                embed.AddField($"-rep {Context.User.Username} reason", $"Removes a reputation point to the tagged member.");
+                embed.AddField($"!rep {Context.User.Username} reason", $"Check the amounts of rep points a person has.");
+                embed.AddField($"Levels", $"Level commands for Zanox");
+                embed.AddField($"!stats {Context.User.Username}", $"Check the Level and XP of a member.");
+                embed.WithColor(new Color(0, 255, 255));
+                embed.WithCurrentTimestamp();
+                embed.WithFooter(Context.User.GetAvatarUrl());
+
+                await Context.User.SendMessageAsync("", false, embed.Build());
+            } catch { }
+        }
+        
+>>>>>>> 8ef9413b8526888c5aea595236ee1e1c1412c848
         [Command("!announcement")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task Announcement([Remainder]string message)
@@ -168,8 +206,12 @@ namespace ZanoxDiscordBot.Modules
                 await Context.Channel.SendMessageAsync("", false, embed.Build());
                 await Task.Delay(3000);
                 await Context.Channel.SendMessageAsync("@everyone");
+<<<<<<< HEAD
             }
             catch { }
+=======
+            } catch { }
+>>>>>>> 8ef9413b8526888c5aea595236ee1e1c1412c848
         }
 
         [Command("!say")]
@@ -187,8 +229,12 @@ namespace ZanoxDiscordBot.Modules
                 }
                 await Context.Message.DeleteAsync();
                 await Context.Channel.SendMessageAsync(message);
+<<<<<<< HEAD
             }
             catch { }
+=======
+            } catch { }
+>>>>>>> 8ef9413b8526888c5aea595236ee1e1c1412c848
         }
 
         [Command("!8ball")]
@@ -208,8 +254,12 @@ namespace ZanoxDiscordBot.Modules
                 embed.WithThumbnailUrl(Context.User.GetAvatarUrl());
 
                 await Context.Channel.SendMessageAsync("", false, embed.Build());
+<<<<<<< HEAD
             }
             catch { }
+=======
+            } catch { }
+>>>>>>> 8ef9413b8526888c5aea595236ee1e1c1412c848
         }
 
         [Command("!key")]
@@ -221,8 +271,12 @@ namespace ZanoxDiscordBot.Modules
                 var dmChannel = await Context.User.GetOrCreateDMChannelAsync();
                 await dmChannel.SendMessageAsync(Utilities.GetAlert("KEY"));
                 await Context.Message.DeleteAsync();
+<<<<<<< HEAD
             }
             catch { }
+=======
+            } catch { }
+>>>>>>> 8ef9413b8526888c5aea595236ee1e1c1412c848
         }
 
         private bool UserIsZanox(SocketGuildUser user)
@@ -250,8 +304,12 @@ namespace ZanoxDiscordBot.Modules
             {
                 uint level = 5;
                 await Context.Channel.SendMessageAsync($"{Context.User.Username} is level {level}!");
+<<<<<<< HEAD
             }
             catch { }
+=======
+            } catch { }
+>>>>>>> 8ef9413b8526888c5aea595236ee1e1c1412c848
         }
 
         [Command("!stats")]
@@ -269,13 +327,20 @@ namespace ZanoxDiscordBot.Modules
                 embed.WithDescription($"requested by {Context.User.Username}!");
                 embed.AddInlineField("Level", account.LevelNumber);
                 embed.AddInlineField("XP", account.XP);
+<<<<<<< HEAD
                 embed.AddInlineField("Reputation", account.Rep);
+=======
+>>>>>>> 8ef9413b8526888c5aea595236ee1e1c1412c848
                 embed.WithColor(new Color(0, 255, 255));
                 embed.WithThumbnailUrl(target.GetAvatarUrl());
 
                 await Context.Channel.SendMessageAsync("", false, embed.Build());
+<<<<<<< HEAD
             }
             catch { }
+=======
+            } catch { }
+>>>>>>> 8ef9413b8526888c5aea595236ee1e1c1412c848
         }
 
         [Command("+xp")]
@@ -307,8 +372,12 @@ namespace ZanoxDiscordBot.Modules
                 embed.WithThumbnailUrl(target.GetAvatarUrl());
 
                 await Context.Channel.SendMessageAsync("", false, embed.Build());
+<<<<<<< HEAD
             }
             catch { }
+=======
+            } catch { }
+>>>>>>> 8ef9413b8526888c5aea595236ee1e1c1412c848
         }
 
         [Command("-xp")]
@@ -340,8 +409,12 @@ namespace ZanoxDiscordBot.Modules
                 embed.WithThumbnailUrl(target.GetAvatarUrl());
 
                 await Context.Channel.SendMessageAsync("", false, embed.Build());
+<<<<<<< HEAD
             }
             catch { }
+=======
+            } catch { }
+>>>>>>> 8ef9413b8526888c5aea595236ee1e1c1412c848
         }
 
         [Command("!profile")]
@@ -357,8 +430,12 @@ namespace ZanoxDiscordBot.Modules
                 embed.WithCurrentTimestamp();
 
                 await Context.Channel.SendMessageAsync("", false, embed.Build());
+<<<<<<< HEAD
             }
             catch { }
+=======
+            } catch { }
+>>>>>>> 8ef9413b8526888c5aea595236ee1e1c1412c848
         }
 
         [Command("!rep")]
@@ -379,8 +456,12 @@ namespace ZanoxDiscordBot.Modules
                 embed.WithThumbnailUrl(target.GetAvatarUrl());
 
                 await Context.Channel.SendMessageAsync("", false, embed.Build());
+<<<<<<< HEAD
             }
             catch { }
+=======
+            } catch { }
+>>>>>>> 8ef9413b8526888c5aea595236ee1e1c1412c848
         }
 
         [Command("+rep")]
@@ -432,8 +513,12 @@ namespace ZanoxDiscordBot.Modules
 
                     Context.Channel.SendMessageAsync("", false, embed.Build());
                 }
+<<<<<<< HEAD
             }
             catch { }
+=======
+            } catch { }
+>>>>>>> 8ef9413b8526888c5aea595236ee1e1c1412c848
         }
 
         [Command("-rep")]
@@ -495,8 +580,12 @@ namespace ZanoxDiscordBot.Modules
             try
             {
                 var apiUrl = $"api.openweathermap.org/data/2.5/weather?q={city}";
+<<<<<<< HEAD
             }
             catch { }
+=======
+            } catch { }
+>>>>>>> 8ef9413b8526888c5aea595236ee1e1c1412c848
         }
 
         [Command("!gotcha")]
@@ -530,6 +619,7 @@ namespace ZanoxDiscordBot.Modules
                 {
                     await Context.Channel.SendMessageAsync("Still on cooldown. " + ((userCooldown - Convert.ToInt32(unixT)) + 600) + " seconds left");
                 }
+<<<<<<< HEAD
             }
             catch { }
         }
@@ -554,6 +644,10 @@ namespace ZanoxDiscordBot.Modules
 
 
 
+=======
+            } catch { }
+        }
+>>>>>>> 8ef9413b8526888c5aea595236ee1e1c1412c848
 
         [Command("!unix")]
         public async Task unixTime()
@@ -564,8 +658,12 @@ namespace ZanoxDiscordBot.Modules
                 string unixT = (Convert.ToString((DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds));
                 unixT = unixT.Remove(10, unixT.Length - 10);
                 await Context.Channel.SendMessageAsync(unixT);
+<<<<<<< HEAD
             }
             catch { }
+=======
+            } catch { }
+>>>>>>> 8ef9413b8526888c5aea595236ee1e1c1412c848
         }
     }
 }
