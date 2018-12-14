@@ -16,6 +16,8 @@ namespace ZanoxDiscordBot.Core.UserAccounts
 
         public uint Money { get; set; }
 
+        public uint NumberOfWarnings { get; set; }
+
         public int GCooldown { get; set; }
 
         public int repCooldown { get; set; }

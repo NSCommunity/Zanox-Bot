@@ -27,12 +27,88 @@ namespace ZanoxDiscordBot.Modules
             var targetRole = user.Guild.GetRole(roleID);
             return user.Roles.Contains(targetRole);
         }
+
+        [Command("!warn")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        [RequireBotPermission(GuildPermission.BanMembers)]
+        public async Task WarnUser(IGuildUser user, string reason = "No Reason Provided.")
+        {
+            var userAccount = UserAccounts.GetAccount((SocketUser)user);
+            userAccount.NumberOfWarnings++;
+            UserAccounts.SaveAccounts();
+
+            if (userAccount.NumberOfWarnings >= 3)
+            {
+                await user.Guild.AddBanAsync(user, 20);
+            }
+            else if (userAccount.NumberOfWarnings == 2)
+            {
+                
+            }
+            else if (userAccount.NumberOfWarnings == 1)
+            {
+                SocketUser target = null;
+                var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
+                target = mentionedUser ?? Context.User;
+
+                var embed = new EmbedBuilder();
+                embed.WithTitle($"You've been warned by {Context.User.Username}!");
+                embed.WithDescription($"Reason: {reason}");
+                embed.WithColor(new Color(0, 255, 255));
+                embed.WithCurrentTimestamp();
+
+                await target.SendMessageAsync("", false, embed.Build());
+                await Context.User.SendMessageAsync($"{target.Username} has been banned by {Context.User.Username}");
+            }
+        }
+
+        [Command("!kick")]
+        [RequireUserPermission(GuildPermission.KickMembers)]
+        [RequireBotPermission(GuildPermission.KickMembers)]
+        public async Task KickUser(IGuildUser user, string reason = "No Reason Provided.")
+        {
+            SocketUser target = null;
+            var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
+            target = mentionedUser ?? Context.User;
+
+            var embed = new EmbedBuilder();
+            embed.WithTitle($"You've been kicked by {Context.User.Username}!");
+            embed.WithDescription($"Reason: {reason}");
+            embed.WithColor(new Color(0, 255, 255));
+            embed.WithCurrentTimestamp();
+
+            await target.SendMessageAsync("", false, embed.Build());
+            await Context.User.SendMessageAsync($"{target.Username} has been banned by {Context.User.Username}");
+            await user.KickAsync(reason);
+        }
+
+        [Command("!ban")]
+        [RequireUserPermission(GuildPermission.BanMembers)]
+        [RequireBotPermission(GuildPermission.BanMembers)]
+        public async Task BanUser(IGuildUser user, string reason = "No Reason Provided.")
+        {
+            SocketUser target = null;
+            var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
+            target = mentionedUser ?? Context.User;
+
+            var embed = new EmbedBuilder();
+            embed.WithTitle($"You've been kicked by {Context.User.Username}!");
+            embed.WithDescription($"Reason: {reason}");
+            embed.WithColor(new Color(0, 255, 255));
+            embed.WithCurrentTimestamp();
+
+            await target.SendMessageAsync("", false, embed.Build());
+            await Context.User.SendMessageAsync($"{target.Username} has been banned by {Context.User.Username}");
+            await user.Guild.AddBanAsync(user, 5, reason);
+        }
+
         [Command("!game")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task Game([Remainder]string game)
         {
             if (!UserIsZanoxAdmin((SocketGuildUser)Context.User)) return;
             await Context.Client.SetGameAsync(game);
+            await Context.User.SendMessageAsync($"The game how now been set to `{game}`");
         }
 
         [Command("!help")]
@@ -166,7 +242,7 @@ namespace ZanoxDiscordBot.Modules
         {
             await Context.Channel.SendMessageAsync("Discord: https://discord.gg/dWwBmxB.");
         }
-            
+
         [Command("!level")]
         public async Task Level(uint xp)
         {
@@ -308,7 +384,7 @@ namespace ZanoxDiscordBot.Modules
         }
 
         [Command("+rep")]
-        public async Task addRep(SocketUser target = null, [Remainder]string reason = "")
+        public async Task addRep(SocketUser target = null, [Remainder]string reason = "No Reason Provided.")
         {
             try
             {
@@ -361,7 +437,7 @@ namespace ZanoxDiscordBot.Modules
         }
 
         [Command("-rep")]
-        public async Task removeRep(SocketUser target = null, [Remainder]string reason = "")
+        public async Task removeRep(SocketUser target = null, [Remainder]string reason = "No Reason Provided.")
         {
             try
             {
@@ -457,6 +533,27 @@ namespace ZanoxDiscordBot.Modules
             }
             catch { }
         }
+
+        [Command("!ali-a")]
+        public async Task alia()
+        {
+            await Task.Delay(0);
+            Context.Message.DeleteAsync();
+            var aliMsg = await Context.Channel.SendMessageAsync("**3**");
+            await Task.Delay(1000);
+            await aliMsg.ModifyAsync(msg => msg.Content = "**2**");
+            await Task.Delay(1000);
+            await aliMsg.ModifyAsync(msg => msg.Content = "**1**");
+            await Task.Delay(1000);
+            await aliMsg.ModifyAsync(msg => msg.Content = "**DROP IT!**");
+            await Task.Delay(1000);
+            await aliMsg.ModifyAsync(msg => msg.Content = "<a:alia1:522851639472685086><a:alia2:522851690060185648>\n<a:alia3:522851727087763476><a:alia4:522851784587214858>");
+            await Task.Delay(6000);
+            await aliMsg.DeleteAsync();
+        }
+
+
+
 
         [Command("!unix")]
         public async Task unixTime()
