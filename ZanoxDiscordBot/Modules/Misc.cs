@@ -30,7 +30,7 @@ namespace ZanoxDiscordBot.Modules
             return user.Roles.Contains(targetRole);
         }
 
-        [Command("!warn")]
+        [Command("z!warn")]
         [RequireUserPermission(GuildPermission.Administrator)]
         [RequireBotPermission(GuildPermission.BanMembers)]
         public async Task WarnUser(IGuildUser user, string reason = "No Reason Provided.")
@@ -64,7 +64,7 @@ namespace ZanoxDiscordBot.Modules
             }
         }
 
-        [Command("!kick")]
+        [Command("z!kick")]
         [RequireUserPermission(GuildPermission.KickMembers)]
         [RequireBotPermission(GuildPermission.KickMembers)]
         public async Task KickUser(IGuildUser user, string reason = "No Reason Provided.")
@@ -84,7 +84,7 @@ namespace ZanoxDiscordBot.Modules
             await user.KickAsync(reason);
         }
 
-        [Command("!ban")]
+        [Command("z!ban")]
         [RequireUserPermission(GuildPermission.BanMembers)]
         [RequireBotPermission(GuildPermission.BanMembers)]
         public async Task BanUser(IGuildUser user, string reason = "No Reason Provided.")
@@ -105,7 +105,7 @@ namespace ZanoxDiscordBot.Modules
         }
 
 
-        [Command("!game")]
+        [Command("z!game")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task Game([Remainder]string game)
         {
@@ -114,7 +114,7 @@ namespace ZanoxDiscordBot.Modules
             await Context.User.SendMessageAsync($"The game how now been set to `{game}`");
         }
 
-        [Command("!help")]
+        [Command("z!help")]
         public async Task Help()
         {
             try
@@ -148,7 +148,7 @@ namespace ZanoxDiscordBot.Modules
             catch { }
         }
 
-        [Command("!announcement")]
+        [Command("z!announcement")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task Announcement([Remainder]string message)
         {
@@ -175,7 +175,7 @@ namespace ZanoxDiscordBot.Modules
             catch { }
         }
 
-        [Command("!say")]
+        [Command("z!say")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task Say([Remainder]string message)
         {
@@ -194,7 +194,7 @@ namespace ZanoxDiscordBot.Modules
             catch { }
         }
 
-        [Command("!8ball")]
+        [Command("z!8ball")]
         public async Task EightBall([Remainder]string message)
         {
             try
@@ -215,7 +215,7 @@ namespace ZanoxDiscordBot.Modules
             catch { }
         }
 
-        [Command("!key")]
+        [Command("z!key")]
         public async Task SecretKey()
         {
             try
@@ -240,13 +240,13 @@ namespace ZanoxDiscordBot.Modules
             return user.Roles.Contains(targetRole);
         }
 
-        [Command("!discord")]
+        [Command("z!discord")]
         public async Task Discord()
         {
             await Context.Channel.SendMessageAsync("Discord: https://discord.gg/dWwBmxB.");
         }
 
-        [Command("!level")]
+        [Command("z!level")]
         public async Task Level(uint xp)
         {
             try
@@ -257,7 +257,7 @@ namespace ZanoxDiscordBot.Modules
             catch { }
         }
 
-        [Command("!stats")]
+        [Command("z!stats")]
         public async Task Stats([Remainder]string arg = "")
         {
             try
@@ -347,7 +347,7 @@ namespace ZanoxDiscordBot.Modules
             catch { }
         }
 
-        [Command("!profile")]
+        [Command("z!profile")]
         public async Task ProfileTest([Remainder]string arg = "")
         {
             try
@@ -365,7 +365,7 @@ namespace ZanoxDiscordBot.Modules
 
         }
 
-        [Command("!rep")]
+        [Command("z!rep")]
         public async Task Rep([Remainder]string arg = "")
         {
             try
@@ -493,7 +493,7 @@ namespace ZanoxDiscordBot.Modules
             catch { }
         }
 
-        [Command("weather")]
+        [Command("z!weather")]
         public async Task Weather(string city)
         {
             try
@@ -503,7 +503,7 @@ namespace ZanoxDiscordBot.Modules
             catch { }
         }
 
-        [Command("!gotcha")]
+        [Command("z!gotcha")]
         public async Task Gotcha(SocketUser target = null)
         {
             try
@@ -538,7 +538,7 @@ namespace ZanoxDiscordBot.Modules
             catch { }
         }
 
-        [Command("!ali-a")]
+        [Command("z!ali-a")]
         public async Task alia()
         {
             await Task.Delay(0);
