@@ -5,6 +5,8 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Net;
+using Discord.Webhook;
 using Discord.Commands;
 using Discord.WebSocket;
 using ZanoxDiscordBot.Core.UserAccounts;
@@ -101,7 +103,6 @@ namespace ZanoxDiscordBot.Modules
             await Context.User.SendMessageAsync($"{target.Username} has been banned by {Context.User.Username}");
             await user.Guild.AddBanAsync(user, 5, reason);
         }
-    }
 
 
         [Command("!game")]
@@ -142,36 +143,11 @@ namespace ZanoxDiscordBot.Modules
                 embed.WithCurrentTimestamp();
                 embed.WithFooter(Context.User.GetAvatarUrl());
 
-                await Context.User.SendMessageAsync("", false, embed.Build());}
-            try {
-                var embed = new EmbedBuilder();
-                embed.WithTitle($":mailbox_with_mail: The help message has been send to you in dms!");
-                embed.WithDescription("");
-                embed.WithColor(new Color(0, 255, 255));
-                embed.WithCurrentTimestamp();
-
-                await Context.Channel.SendMessageAsync("", false, embed.Build());
-
-                var message = new EmbedBuilder();
-                embed.WithTitle($"Zanox Bot Help");
-                embed.WithDescription("Commands for Zanox");
-                embed.AddField($"Fun Commands!", "fun commands for Zanox");
-                embed.AddField($"!8ball", $"Chooses between an object | to seperate (!8ball {Context.User.Username}| Zanox Bot)");
-                embed.AddField($"!gotcha {Context.User.Username}", $"Send the tagged person a little suprise!");
-                embed.AddField($"Reputation", "reputation commands for Zanox");
-                embed.AddField($"+rep {Context.User.Username} reason", $"Adds a reputation point to the tagged member.");
-                embed.AddField($"-rep {Context.User.Username} reason", $"Removes a reputation point to the tagged member.");
-                embed.AddField($"!rep {Context.User.Username} reason", $"Check the amounts of rep points a person has.");
-                embed.AddField($"Levels", $"Level commands for Zanox");
-                embed.AddField($"!stats {Context.User.Username}", $"Check the Level and XP of a member.");
-                embed.WithColor(new Color(0, 255, 255));
-                embed.WithCurrentTimestamp();
-                embed.WithFooter(Context.User.GetAvatarUrl());
-
                 await Context.User.SendMessageAsync("", false, embed.Build());
-            } catch { }
+            }
+            catch { }
         }
-        
+
         [Command("!announcement")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task Announcement([Remainder]string message)
@@ -385,7 +361,7 @@ namespace ZanoxDiscordBot.Modules
 
                 await Context.Channel.SendMessageAsync("", false, embed.Build());
             }
-           catch { }
+            catch { }
 
         }
 

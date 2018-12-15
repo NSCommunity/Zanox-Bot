@@ -14,13 +14,10 @@ namespace ZanoxDiscordBot
         DiscordSocketClient _client;
         CommandHandler _handler;
 
-        static void Main(string[] args)
-        => new Program().StartAsync().GetAwaiter().GetResult();
-
+        static void Main(string[] args) => new Program().StartAsync().GetAwaiter().GetResult();
 
         public async Task StartAsync()
         {
-            if (Config.bot.token == "" || Config.bot.token == null) return;
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {
                 LogLevel = LogSeverity.Verbose

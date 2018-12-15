@@ -33,7 +33,7 @@ namespace ZanoxDiscordBot
             Leveling.UserSentMessageAsync((SocketGuildUser)context.User, (SocketTextChannel)context.Channel);
 
             int argPos = 0;
-            if(msg.HasStringPrefix(Config.bot.cmdPrefix, ref argPos) 
+            if(msg.HasStringPrefix("", ref argPos) 
                 ||msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
                 var result = await _service.ExecuteAsync(context, argPos);
