@@ -13,6 +13,8 @@ using ZanoxDiscordBot.Core.UserAccounts;
 using System.Net;
 using Newtonsoft.Json;
 using System.Net.Http;
+using NReco.ImageGenerator;
+using System.IO;
 
 namespace ZanoxDiscordBot.Modules
 {
@@ -45,7 +47,6 @@ namespace ZanoxDiscordBot.Modules
             }
             else if (userAccount.NumberOfWarnings == 2)
             {
-
             }
             else if (userAccount.NumberOfWarnings == 1)
             {
@@ -131,14 +132,14 @@ namespace ZanoxDiscordBot.Modules
                 embed.WithTitle($"Zanox Bot Help");
                 embed.WithDescription("Commands for Zanox");
                 embed.AddField($"Fun Commands!", "fun commands for Zanox");
-                embed.AddField($"!8ball", $"Chooses between an object | to seperate (!8ball {Context.User.Username}| Zanox Bot)");
-                embed.AddField($"!gotcha {Context.User.Username}", $"Send the tagged person a little suprise!");
+                embed.AddField($"z!8ball", $"Chooses between an object | to seperate (!8ball {Context.User.Username}| Zanox Bot)");
+                embed.AddField($"z!gotcha {Context.User.Username}", $"Send the tagged person a little suprise!");
                 embed.AddField($"Reputation", "reputation commands for Zanox");
                 embed.AddField($"+rep {Context.User.Username} reason", $"Adds a reputation point to the tagged member.");
                 embed.AddField($"-rep {Context.User.Username} reason", $"Removes a reputation point to the tagged member.");
-                embed.AddField($"!rep {Context.User.Username} reason", $"Check the amounts of rep points a person has.");
+                embed.AddField($"z!rep {Context.User.Username} reason", $"Check the amounts of rep points a person has.");
                 embed.AddField($"Levels", $"Level commands for Zanox");
-                embed.AddField($"!stats {Context.User.Username}", $"Check the Level and XP of a member.");
+                embed.AddField($"z!stats {Context.User.Username}", $"Check the Level and XP of a member.");
                 embed.WithColor(new Color(0, 255, 255));
                 embed.WithCurrentTimestamp();
                 embed.WithFooter(Context.User.GetAvatarUrl());
@@ -568,5 +569,44 @@ namespace ZanoxDiscordBot.Modules
             }
             catch { }
         }
+
+        [Command("test")]
+        public async Task Test()
+        {
+            string html = String.Format($"<h1>{Context.User.Username}</h1>");
+
+            var converter = new HtmlToImageConverter
+            {
+                Width = 800,
+                Height = 300
+            };
+            var jpgBytes = converter.GenerateImage(html, NReco.ImageGenerator.ImageFormat.Jpeg);
+            await Context.Channel.SendFileAsync(new MemoryStream(jpgBytes), "test.jpg");
+        }
+
+        [Command("z!id")]
+        public async Task ID()
+        {
+            string json = "";
+            using (WebClient client = new WebClient())
+            {
+                json = client.DownloadString("https://randomuser.me/api/?gender=?&nat=US");            
+            }
+
+            var dataObject = JsonConvert.DeserializeObject<dynamic>(json);
+
+            string firstname = dataObject.results[0].name.first.ToString();
+            string lastname = dataObject.results[0].name.last.ToString();
+            string avatarURL = dataObject.results[0].picture.large.ToString();
+
+            var embed = new EmbedBuilder();
+            embed.WithThumbnailUrl(avatarURL);
+            embed.WithTitle("Generated ID");
+            embed.AddInlineField("First Name", firstname.First().ToString().ToUpper() + firstname.Substring(1));
+            embed.AddInlineField("Last Name", lastname.First().ToString().ToUpper() + lastname.Substring(1));
+
+            await Context.Channel.SendMessageAsync("", embed: embed);
+        }
+
     }
 }

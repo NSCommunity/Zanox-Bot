@@ -29,15 +29,25 @@ namespace ZanoxDiscordBot
             _handler = new CommandHandler();
             await _handler.InitializeAsync(_client);
             _client.Ready += SetGame;
+            _client.JoinedGuild += JoinedGuild;
+            _client.LeftGuild += LeftGuild;
             await Task.Delay(-1);
         }
 
             public async Task SetGame()
         {
-            await _client.SetGameAsync("!help");
+            await _client.SetGameAsync("z!help");
         }
 
-        
+        private async Task JoinedGuild(SocketGuild arg)
+        {
+            Console.WriteLine($"Zanox has joined the discord {arg.Name}!");
+        }
+
+        private async Task LeftGuild(SocketGuild arg)
+        {
+            Console.WriteLine($"Zanox has left the discord {arg.Name}!");
+        }
 
         private async Task Log(LogMessage msg)
         {

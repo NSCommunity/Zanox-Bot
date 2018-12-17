@@ -182,3 +182,5 @@ C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\System.Diagno
 C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\System.Interactive.Async.xml
 C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\obj\Debug\ZanoxDiscordBot.csproj.CopyComplete
 C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\obj\Debug\ZanoxDiscordBot.pdb
+C:\Users\ludov\Documents\GitHub\Zanox-Bot\ZanoxDiscordBot\bin\Debug\NReco.ImageGenerator.dll
+C:\Users\ludov\Documents\GitHub\Zanox-Bot\ZanoxDiscordBot\bin\Debug\NReco.ImageGenerator.xml
