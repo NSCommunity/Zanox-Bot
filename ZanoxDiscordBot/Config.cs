@@ -8,14 +8,13 @@ using Newtonsoft.Json;
 
 namespace ZanoxDiscordBot
 {
-        /*
     class Config
     {
         private const string configFolder = "Resources";
         private const string configFile = "config.json";
 
         public static BotConfig bot;
-        
+
         static Config()
         {
             if (!Directory.Exists(configFolder))
@@ -40,7 +39,6 @@ namespace ZanoxDiscordBot
         public string token;
         public string cmdPrefix;
     }
-        */
 }
 
 
