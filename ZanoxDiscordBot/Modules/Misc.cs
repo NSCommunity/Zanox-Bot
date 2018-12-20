@@ -416,7 +416,7 @@ namespace ZanoxDiscordBot.Modules
                         embed.WithCurrentTimestamp();
                         account.repCooldown = Convert.ToInt32(unixT);
 
-                        Context.Channel.SendMessageAsync("", false, embed.Build());
+                        await Context.Channel.SendMessageAsync("", false, embed.Build());
                     }
                     else
                     {
@@ -425,7 +425,7 @@ namespace ZanoxDiscordBot.Modules
                         embed.WithColor(new Color(0, 255, 255));
                         embed.WithCurrentTimestamp();
 
-                        Context.Channel.SendMessageAsync("", false, embed.Build());
+                        await Context.Channel.SendMessageAsync("", false, embed.Build());
                     }
                 }
                 else
@@ -435,7 +435,7 @@ namespace ZanoxDiscordBot.Modules
                     embed.WithColor(new Color(0, 255, 255));
                     embed.WithCurrentTimestamp();
 
-                    Context.Channel.SendMessageAsync("", false, embed.Build());
+                    await Context.Channel.SendMessageAsync("", false, embed.Build());
                 }
             }
             catch { }
@@ -469,7 +469,7 @@ namespace ZanoxDiscordBot.Modules
                         embed.WithCurrentTimestamp();
                         account.repCooldown = Convert.ToInt32(unixT);
 
-                        Context.Channel.SendMessageAsync("", false, embed.Build());
+                        await Context.Channel.SendMessageAsync("", false, embed.Build());
                     }
                     else
                     {
@@ -478,7 +478,7 @@ namespace ZanoxDiscordBot.Modules
                         embed.WithColor(new Color(0, 255, 255));
                         embed.WithCurrentTimestamp();
 
-                        Context.Channel.SendMessageAsync("", false, embed.Build());
+                        await Context.Channel.SendMessageAsync("", false, embed.Build());
                     }
                 }
                 else
@@ -487,9 +487,9 @@ namespace ZanoxDiscordBot.Modules
                     embed.WithTitle($"You can't take away your own rep!");
                     embed.WithColor(new Color(0, 255, 255));
                     embed.WithCurrentTimestamp();
-
-                    Context.Channel.SendMessageAsync("", false, embed.Build());
+                    await Context.Channel.SendMessageAsync("", false, embed.Build());
                 }
+
             }
             catch { }
         }
@@ -497,6 +497,7 @@ namespace ZanoxDiscordBot.Modules
         [Command("z!weather")]
         public async Task Weather(string city)
         {
+            await Task.Delay(0);
             try
             {
                 var apiUrl = $"api.openweathermap.org/data/2.5/weather?q={city}";
@@ -518,7 +519,7 @@ namespace ZanoxDiscordBot.Modules
                 if (Convert.ToInt32(unixT) - 600 > userCooldown || target == Context.User)
                 {
                     await target.SendMessageAsync($"**{Context.User.Username}** Gotcha!");
-                    target.SendMessageAsync($"⠀⠀⠀⠀⠀⡼⡑⢅⠪⡐⠅⠪⡐⢌⠢⡑⠌⡢⢑⠌⠢⡑⠌⡢⠑⢌⠢⠑⡌⠰⡁⡣⢘⠵⢦⡀\n⠀⠀⠀⠀⢰⢍⠊⠔⠡⡈⠜⡠⠑⠄⢅⠌⡂⠢⡁⢊⠢⠘⢄⠊⢌⠂⢅⢑⢈⠢⡨⠠⡑⠨⠢⡫⡆\n⠀⠀⠀⠀⡗⢅⠑⡁⡑⠠⠊⡀⡑⠌⠐⠄⢊⠐⡨⠀⢅⠊⡠⠊⠠⠊⡠⠂⡁⠢⠐⡐⢈⠂⡑⢄⢙⢇⡀\n⠀⠀⠀⡸⡑⢌⠐⠄⢌⠐⡁⠔⢀⠊⡨⠠⢁⠢⢀⠑⠠⢂⠐⠌⡐⢁⠄⠌⠠⢁⠌⠠⠁⠔⢀⠢⢀⠣⢳⢄\n⠀⠀⢠⠫⡂⠔⢁⠂⠢⠐⡀⢊⠠⠂⡐⢐⠀⡂⢁⠈⠢⠠⡈⠄⠢⡀⢆⢨⢂⠔⡀⢅⠈⠂⠔⢀⠅⡐⢁⠫⣆\n⠀⢀⢏⠪⢀⠊⡠⠈⢄⠡⠐⡀⠢⢈⠠⠂⠨⢀⠂⡁⡊⣐⢄⣳⠕⠯⠚⠓⠛⠚⠶⣄⠅⡡⠈⢄⠐⠠⢁⠊⡜⣥⠀\n⠀⣜⠥⡑⠠⠂⡐⠈⠄⠄⡡⠠⢁⠂⠄⡑⠠⢁⢌⢔⢮⠎⠋⠁⠀⠀⠀⠀⠀⠀⠀⠑⢧⠐⡡⠠⢈⠂⢄⠡⡈⢮⡀\n⠰⣝⢆⠢⠁⠂⠌⠠⠑⡀⢂⠐⠄⡈⡐⢀⠑⢤⡳⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢙⡬⡀⠂⠔⢀⠢⠐⡈⢎⡇\n⢘⢮⡣⡂⠡⢁⠊⠠⠁⠔⢀⠁⠢⠐⡀⢅⠈⡲⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢷⡨⠨⡀⠅⢐⠈⠄⢪⢖\n⠈⡮⡳⡕⡡⢀⠊⠠⠑⠈⢄⠁⡊⢀⠢⠠⢈⠌⠳⡔⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢳⢕⢄⠑⢄⢈⠢⡁⢯⡂\n⠘⡮⡹⣖⠤⡁⢊⠠⠑⡀⠂⠔⢀⠂⠢⠠⢈⠂⠔⠠⡑⠝⢖⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠳⢝⣔⢦⡱⣜⠵⠃\n⠀⠸⡢⡊⡛⢼⢔⡄⡡⠠⢁⠌⠠⡈⢄⠁⠂⠌⠠⡁⠔⢈⠂⡙⢕⠢⠲⠪⡚⠪⠪⡋⢚⠕⡫⡲⡀⠀⠁⠈\n⠀⠀⠳⡨⢂⠡⠊⡱⠳⠶⣄⣊⠠⠂⠄⢊⠈⢄⠡⠐⡀⠅⡈⠄⢂⠁⡑⠄⠌⡐⠁⠌⠐⠄⡊⢨⡛⡄\n⠀⠀⠈⢕⠔⡀⠊⠠⡈⠢⡑⢍⡳⣳⢜⡤⣌⠠⢂⠂⠔⢀⠢⠈⠄⢂⠐⡈⠄⠨⡀⠅⠑⡠⢈⢆⡽⠁\n⠀⠀⠀⠨⢆⠌⡈⠐⠄⠡⠐⡡⢪⢗⢽⠆⠉⠙⠣⠷⣜⡤⡢⡡⡨⡀⡢⢐⢈⠔⡠⣊⢦⣪⠖⠏\n⠀ ⠀⠀⠀⠳⡨⡀⡑⢈⠂⡡⠐⢌⡷⣙⢖⣄⠀⠀⠀⠀⠈⠉⠙⠚⠚⠪⠳⠓⠋⠋⠁⠁\n⠀ ⠀⠀⠀⠈⢖⠄⠢⠐⠠⠂⢌⠠⢛⢮⡪⡜⣕⡀\n⠀⠀⠀⠀⠀⠀⠘⣎⢐⠡⢈⠂⠢⠐⡁⢝⢮⡪⡢⡹⣂\n⠀⠀⠀⠀⠀⠀⠀⠸⣢⠡⢂⢈⠐⡁⠔⠠⢓⢵⡪⢢⠑⡝⢢⣄\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠫⡢⠄⢌⢀⠊⡐⠡⢊⢷⡑⡌⡐⠡⡘⢦⡀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⡔⢢⢀⠊⢄⠑⠔⡡⢻⡔⢌⠂⡕⡸⠆\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⡢⡡⡨⠠⡑⠌⡢⢑⠽⣪⡪⣢⠏\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢲⢐⠅⠢⡑⠨⡢⣙⢜\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢕⡕⡡⢊⠒⢔⢌⡗\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠕⡵⣩⡲⡕");
+                    await target.SendMessageAsync($"⠀⠀⠀⠀⠀⡼⡑⢅⠪⡐⠅⠪⡐⢌⠢⡑⠌⡢⢑⠌⠢⡑⠌⡢⠑⢌⠢⠑⡌⠰⡁⡣⢘⠵⢦⡀\n⠀⠀⠀⠀⢰⢍⠊⠔⠡⡈⠜⡠⠑⠄⢅⠌⡂⠢⡁⢊⠢⠘⢄⠊⢌⠂⢅⢑⢈⠢⡨⠠⡑⠨⠢⡫⡆\n⠀⠀⠀⠀⡗⢅⠑⡁⡑⠠⠊⡀⡑⠌⠐⠄⢊⠐⡨⠀⢅⠊⡠⠊⠠⠊⡠⠂⡁⠢⠐⡐⢈⠂⡑⢄⢙⢇⡀\n⠀⠀⠀⡸⡑⢌⠐⠄⢌⠐⡁⠔⢀⠊⡨⠠⢁⠢⢀⠑⠠⢂⠐⠌⡐⢁⠄⠌⠠⢁⠌⠠⠁⠔⢀⠢⢀⠣⢳⢄\n⠀⠀⢠⠫⡂⠔⢁⠂⠢⠐⡀⢊⠠⠂⡐⢐⠀⡂⢁⠈⠢⠠⡈⠄⠢⡀⢆⢨⢂⠔⡀⢅⠈⠂⠔⢀⠅⡐⢁⠫⣆\n⠀⢀⢏⠪⢀⠊⡠⠈⢄⠡⠐⡀⠢⢈⠠⠂⠨⢀⠂⡁⡊⣐⢄⣳⠕⠯⠚⠓⠛⠚⠶⣄⠅⡡⠈⢄⠐⠠⢁⠊⡜⣥⠀\n⠀⣜⠥⡑⠠⠂⡐⠈⠄⠄⡡⠠⢁⠂⠄⡑⠠⢁⢌⢔⢮⠎⠋⠁⠀⠀⠀⠀⠀⠀⠀⠑⢧⠐⡡⠠⢈⠂⢄⠡⡈⢮⡀\n⠰⣝⢆⠢⠁⠂⠌⠠⠑⡀⢂⠐⠄⡈⡐⢀⠑⢤⡳⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢙⡬⡀⠂⠔⢀⠢⠐⡈⢎⡇\n⢘⢮⡣⡂⠡⢁⠊⠠⠁⠔⢀⠁⠢⠐⡀⢅⠈⡲⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢷⡨⠨⡀⠅⢐⠈⠄⢪⢖\n⠈⡮⡳⡕⡡⢀⠊⠠⠑⠈⢄⠁⡊⢀⠢⠠⢈⠌⠳⡔⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢳⢕⢄⠑⢄⢈⠢⡁⢯⡂\n⠘⡮⡹⣖⠤⡁⢊⠠⠑⡀⠂⠔⢀⠂⠢⠠⢈⠂⠔⠠⡑⠝⢖⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠳⢝⣔⢦⡱⣜⠵⠃\n⠀⠸⡢⡊⡛⢼⢔⡄⡡⠠⢁⠌⠠⡈⢄⠁⠂⠌⠠⡁⠔⢈⠂⡙⢕⠢⠲⠪⡚⠪⠪⡋⢚⠕⡫⡲⡀⠀⠁⠈\n⠀⠀⠳⡨⢂⠡⠊⡱⠳⠶⣄⣊⠠⠂⠄⢊⠈⢄⠡⠐⡀⠅⡈⠄⢂⠁⡑⠄⠌⡐⠁⠌⠐⠄⡊⢨⡛⡄\n⠀⠀⠈⢕⠔⡀⠊⠠⡈⠢⡑⢍⡳⣳⢜⡤⣌⠠⢂⠂⠔⢀⠢⠈⠄⢂⠐⡈⠄⠨⡀⠅⠑⡠⢈⢆⡽⠁\n⠀⠀⠀⠨⢆⠌⡈⠐⠄⠡⠐⡡⢪⢗⢽⠆⠉⠙⠣⠷⣜⡤⡢⡡⡨⡀⡢⢐⢈⠔⡠⣊⢦⣪⠖⠏\n⠀ ⠀⠀⠀⠳⡨⡀⡑⢈⠂⡡⠐⢌⡷⣙⢖⣄⠀⠀⠀⠀⠈⠉⠙⠚⠚⠪⠳⠓⠋⠋⠁⠁\n⠀ ⠀⠀⠀⠈⢖⠄⠢⠐⠠⠂⢌⠠⢛⢮⡪⡜⣕⡀\n⠀⠀⠀⠀⠀⠀⠘⣎⢐⠡⢈⠂⠢⠐⡁⢝⢮⡪⡢⡹⣂\n⠀⠀⠀⠀⠀⠀⠀⠸⣢⠡⢂⢈⠐⡁⠔⠠⢓⢵⡪⢢⠑⡝⢢⣄\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠫⡢⠄⢌⢀⠊⡐⠡⢊⢷⡑⡌⡐⠡⡘⢦⡀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⡔⢢⢀⠊⢄⠑⠔⡡⢻⡔⢌⠂⡕⡸⠆\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⡢⡡⡨⠠⡑⠌⡢⢑⠽⣪⡪⣢⠏\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢲⢐⠅⠢⡑⠨⡢⣙⢜\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢕⡕⡡⢊⠒⢔⢌⡗\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠕⡵⣩⡲⡕");
                     if (target != Context.User)
                         account.GCooldown = Convert.ToInt32(unixT);
                     var embed = new EmbedBuilder();
@@ -543,7 +544,7 @@ namespace ZanoxDiscordBot.Modules
         public async Task alia()
         {
             await Task.Delay(0);
-            Context.Message.DeleteAsync();
+            await Context.Message.DeleteAsync();
             var aliMsg = await Context.Channel.SendMessageAsync("**3**");
             await Task.Delay(1000);
             await aliMsg.ModifyAsync(msg => msg.Content = "**2**");
@@ -570,18 +571,35 @@ namespace ZanoxDiscordBot.Modules
             catch { }
         }
 
-        [Command("test")]
+        [Command("z!welcome")]
         public async Task Test()
         {
-            string html = String.Format($"<h1>{Context.User.Username}</h1>");
+            var userImg = @"https://cdn.discordapp.com/avatars/" + Context.User.Id + @"/" + Context.User.AvatarId + @".png".Replace(" ", "%20");
+            string html = String.Format($"<html><head> <meta charset=\"utf-8\"> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"> <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/css/bootstrap.min.css\"></head><body style=\"overflow:hidden;background-image:url(&quot;http://92.244.209.118/DMNHosting/api/discord/welcomeAssets/img/eS4IxK3.png&quot;);\"> <div style=\"display:table;position:absolute;top:0;left:0;height:100%;width:100%;\"> <div style=\"display:table-cell;vertical-align:middle;\"> <div style=\"margin-left:auto;margin-right:auto;text-align:center;\"><img src=\"{userImg}\" style=\"height:125px;width:125px;\"><div></div>\" <div style=\"color:#FFF;\"><h1 style=\"font-size:25px;\"><b>Welcome to {Context.Guild.Name},</b></h1> <h1 style=\"font-size:15px;\"><b>{Context.User.Username}</b></h1> </div></div></div></div><script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js\"></script> <script src=\"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/js/bootstrap.bundle.min.js\"></script></body></html>");
 
-            var converter = new HtmlToImageConverter
-            {
-                Width = 800,
-                Height = 300
-            };
-            var jpgBytes = converter.GenerateImage(html, NReco.ImageGenerator.ImageFormat.Jpeg);
-            await Context.Channel.SendFileAsync(new MemoryStream(jpgBytes), "test.jpg");
+            var converter = new HtmlToImageConverter { Width = 500, Height = 250};
+            var jpgBytes = converter.GenerateImage(html, NReco.ImageGenerator.ImageFormat.Png);
+            await Context.Guild.DefaultChannel.SendMessageAsync("test");
+            await Context.Channel.SendFileAsync(new MemoryStream(jpgBytes), $"Welcome {Context.User.Username}.png");
+        }
+
+        [Command("z!setDefault")]
+        public async Task setDef()
+        {
+            await Task.Delay(0);
+            await Context.Channel.SendMessageAsync("Default Channel is now " + Context.Channel.Id + " as server " + Context.Guild.Id);
+            var account = UserAccounts.GetOrCreateAccount(Context.Guild.Id);
+            account.DefaultChannelID = Context.Channel.Id;
+            UserAccounts.SaveAccounts();
+        }
+
+        [Command("z!kick")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task hveTest(IGuildUser user, [Remainder] string reason = null)
+        {
+            Console.WriteLine("Kicked " + user.Username);
+            await user.KickAsync();
+            await user.Guild.AddBanAsync(user, reason: reason);
         }
 
         [Command("z!id")]
@@ -606,6 +624,25 @@ namespace ZanoxDiscordBot.Modules
             embed.AddInlineField("Last Name", lastname.First().ToString().ToUpper() + lastname.Substring(1));
 
             await Context.Channel.SendMessageAsync("", embed: embed);
+        }
+
+        [Command("z!toggleLevelingAlert")]
+        public async Task toggleLevelAlert()
+        {
+            await Task.Delay(0);
+            var account = UserAccounts.GetOrCreateAccount(Context.Guild.Id);
+            if (account.levelingAlert == 0)
+            {
+                account.levelingAlert = 1;
+                UserAccounts.SaveAccounts();
+                await Context.Channel.SendMessageAsync("Leveling Alerts has been on toggled for this server");
+            }
+            else
+            {
+                account.levelingAlert = 0;
+                UserAccounts.SaveAccounts();
+                await Context.Channel.SendMessageAsync("Leveling Alerts has been toggled off for this server");
+            }
         }
 
     }

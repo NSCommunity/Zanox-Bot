@@ -36,7 +36,7 @@ namespace ZanoxDiscordBot.Core.UserAccounts
             return GetOrCreateAccount(user.Id);
         }
 
-        private static UserAccount GetOrCreateAccount(ulong id)
+        public static UserAccount GetOrCreateAccount(ulong id)
         {
             var resault = from a in accounts
                           where a.ID == id
@@ -53,7 +53,13 @@ namespace ZanoxDiscordBot.Core.UserAccounts
             {
                 ID = id,
                 XP = 0,
-                GCooldown = 0
+                GCooldown = 0,
+                DefaultChannelID = 522795148598575135,
+                Rep = 0,
+                repCooldown = 0,
+                Money = 0,
+                NumberOfWarnings = 0,
+                levelingAlert = 1
             };
 
             accounts.Add(newAccount);

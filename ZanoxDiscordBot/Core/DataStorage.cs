@@ -28,6 +28,6 @@ namespace ZanoxDiscordBot.Core
         {
             return File.Exists(filePath);
         }
-        
+
     }
 }

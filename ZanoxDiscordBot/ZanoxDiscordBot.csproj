@@ -166,7 +166,9 @@
     <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="SystemLang\alerts.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

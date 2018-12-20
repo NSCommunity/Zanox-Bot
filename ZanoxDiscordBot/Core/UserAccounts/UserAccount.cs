@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace ZanoxDiscordBot.Core.UserAccounts
 {
     public class UserAccount
     {
+        //User Settings
+
         public ulong ID { get; set; }
 
         public uint XP { get; set; }
@@ -22,6 +25,8 @@ namespace ZanoxDiscordBot.Core.UserAccounts
 
         public int repCooldown { get; set; }
 
+        public int levelingAlert { get; set; }
+
         public uint LevelNumber
         {
             get
@@ -29,5 +34,9 @@ namespace ZanoxDiscordBot.Core.UserAccounts
                 return (uint)Math.Sqrt(XP / 50);
             }
         }
+
+        //Server Settings
+
+        public ulong DefaultChannelID { get; set; }
     }
 }
