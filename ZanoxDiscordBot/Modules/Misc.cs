@@ -626,8 +626,8 @@ namespace ZanoxDiscordBot.Modules
             await Context.Channel.SendMessageAsync("", embed: embed);
         }
 
-        [Command("z!toggleLevelingAlert")]
-        public async Task toggleLevelAlert()
+        [Command("z!toggleServerLevelingAlert")]
+        public async Task toggleServerLevelAlert()
         {
             await Task.Delay(0);
             var account = UserAccounts.GetOrCreateAccount(Context.Guild.Id);
@@ -645,5 +645,36 @@ namespace ZanoxDiscordBot.Modules
             }
         }
 
+        [Command("z!toggleLevelingAlert")]
+        public async Task toggleLevelAlert()
+        {
+            await Task.Delay(0);
+            var account = UserAccounts.GetOrCreateAccount(Context.Guild.Id);
+            if (account.levelingAlert == 0)
+            {
+                account.levelingAlertChannel = 1;
+                UserAccounts.SaveAccounts();
+                await Context.Channel.SendMessageAsync("Leveling Alerts has been on toggled for this channel");
+            }
+            else
+            {
+                account.levelingAlertChannel = 0;
+                UserAccounts.SaveAccounts();
+                await Context.Channel.SendMessageAsync("Leveling Alerts has been toggled off for this channel");
+            }
+        }
+
+        [Command("z!I accept all these rules")]
+        public async Task acceptRulesOfficial()
+        {
+            await Task.Delay(0);
+            if (Context.Channel.Id == 525282267715600404)
+            {
+                Context.Message.DeleteAsync();
+                var user = Context.User;
+                var role = Context.Guild.Roles.FirstOrDefault(x => x.Name == "Member");
+                await (user as IGuildUser).AddRoleAsync(role);
+            }
+        }
     }
 }

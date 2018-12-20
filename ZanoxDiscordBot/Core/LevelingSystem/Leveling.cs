@@ -23,7 +23,8 @@ namespace ZanoxDiscordBot.Core.LevelingSystem
                 if (oldLevel != newLevel)
                 {
                     var GuildSettings = UserAccounts.UserAccounts.GetOrCreateAccount(user.Guild.Id);
-                    if (GuildSettings.levelingAlert == 1)
+                    var ChannelSettings = UserAccounts.UserAccounts.GetOrCreateAccount(channel.Id);
+                    if (GuildSettings.levelingAlert == 1 && ChannelSettings.levelingAlertChannel == 1)
                     {
                         var embed = new EmbedBuilder();
                         embed.WithTitle($"{user.Username} you have leveled up!");

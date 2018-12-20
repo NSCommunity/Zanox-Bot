@@ -185,3 +185,4 @@ C:\Users\ludov\Documents\GitHub\Zanox-Bot\ZanoxDiscordBot\bin\Debug\NReco.ImageG
 C:\Users\ludov\Documents\GitHub\Zanox-Bot\ZanoxDiscordBot\bin\Debug\NReco.ImageGenerator.xml
 C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\NReco.ImageGenerator.dll
 C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\NReco.ImageGenerator.xml
+C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\obj\Debug\ZanoxDiscordBot.csprojAssemblyReference.cache

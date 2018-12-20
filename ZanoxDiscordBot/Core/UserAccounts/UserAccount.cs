@@ -25,8 +25,6 @@ namespace ZanoxDiscordBot.Core.UserAccounts
 
         public int repCooldown { get; set; }
 
-        public int levelingAlert { get; set; }
-
         public uint LevelNumber
         {
             get
@@ -38,5 +36,9 @@ namespace ZanoxDiscordBot.Core.UserAccounts
         //Server Settings
 
         public ulong DefaultChannelID { get; set; }
+
+        public int levelingAlert { get; set; }
+
+        public int levelingAlertChannel { get; set; }
     }
 }
