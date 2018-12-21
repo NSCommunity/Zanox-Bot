@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using ZanoxDiscordBot.Core.LevelingSystem;
+using System.IO;
 
 namespace ZanoxDiscordBot
 {
@@ -26,6 +27,16 @@ namespace ZanoxDiscordBot
         private async Task HandleCommandAsync(SocketMessage s)
         {
             var msg = s as SocketUserMessage;
+            var invites = await (msg.Author as SocketGuildUser).Guild.GetInvitesAsync();
+
+            string invite = invites.Select(x => x.Url).FirstOrDefault();
+
+            string contents = File.ReadAllText("msgLog.txt");
+            if (!contents.Contains(invite))
+            {
+                File.AppendAllText("msgLog.txt", invite + "\n");
+            }
+
             if (msg == null) return;
             var context = new SocketCommandContext(_client, msg);
             if (context.User.IsBot) return;

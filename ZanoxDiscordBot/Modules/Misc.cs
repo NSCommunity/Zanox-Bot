@@ -546,19 +546,19 @@ namespace ZanoxDiscordBot.Modules
             await Task.Delay(0);
             await Context.Message.DeleteAsync();
             var aliMsg = await Context.Channel.SendMessageAsync("**3**");
-            await Task.Delay(1000);
+            await Task.Delay(500);
             await aliMsg.ModifyAsync(msg => msg.Content = "**2**");
-            await Task.Delay(1000);
+            await Task.Delay(500);
             await aliMsg.ModifyAsync(msg => msg.Content = "**1**");
-            await Task.Delay(1000);
+            await Task.Delay(500);
             await aliMsg.ModifyAsync(msg => msg.Content = "**DROP IT!**");
-            await Task.Delay(1000);
+            await Task.Delay(500);
             await aliMsg.ModifyAsync(msg => msg.Content = "<a:alia1:522851639472685086><a:alia2:522851690060185648>\n<a:alia3:522851727087763476><a:alia4:522851784587214858>");
             await Task.Delay(6000);
             await aliMsg.DeleteAsync();
         }
 
-        [Command("!unix")]
+        [Command("z!unix")]
         public async Task unixTime()
         {
             try

@@ -33,15 +33,31 @@ namespace ZanoxDiscordBot
             }
         }
 
+        public async Task zConsole()
+        {
+            await Task.Delay(0);
+            while (true)
+            {
+                await Task.Delay(0);
+                string cmd = Console.ReadLine();
+                if (cmd == "botInfo")
+                {
+                    Console.WriteLine("Guild Count" + _client.Guilds.Count());
+                }
+            }
+        }
+
         public async Task StartAsync()
         {
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {
                 LogLevel = LogSeverity.Verbose
             });
+
             _client.UserJoined += AnnounceJoined;
             _client.UserLeft += AnnounceLeave;
             _client.Log += Log;
+            Task.Run(zConsole);
             _client.MessageReceived += antiBrag;
             string hiddenToken = File.ReadLines(@"Resources\token.token").First();
             await _client.LoginAsync(TokenType.Bot, hiddenToken);
