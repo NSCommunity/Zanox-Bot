@@ -37,31 +37,38 @@ namespace ZanoxDiscordBot.Modules
         [RequireBotPermission(GuildPermission.BanMembers)]
         public async Task WarnUser(IGuildUser user, string reason = "No Reason Provided.")
         {
-            var userAccount = UserAccounts.GetAccount((SocketUser)user);
-            userAccount.NumberOfWarnings++;
-            UserAccounts.SaveAccounts();
-
-            if (userAccount.NumberOfWarnings >= 3)
+            try
             {
-                await user.Guild.AddBanAsync(user, 20);
+                var userAccount = UserAccounts.GetAccount((SocketUser)user);
+                userAccount.NumberOfWarnings++;
+                UserAccounts.SaveAccounts();
+
+                if (userAccount.NumberOfWarnings >= 3)
+                {
+                    await user.Guild.AddBanAsync(user, 20);
+                }
+                else if (userAccount.NumberOfWarnings == 2)
+                {
+                }
+                else if (userAccount.NumberOfWarnings == 1)
+                {
+                    SocketUser target = null;
+                    var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
+                    target = mentionedUser ?? Context.User;
+
+                    var embed = new EmbedBuilder();
+                    embed.WithTitle($"You've been warned by {Context.User.Username}!");
+                    embed.WithDescription($"Reason: {reason}");
+                    embed.WithColor(new Color(0, 255, 255));
+                    embed.WithCurrentTimestamp();
+
+                    await target.SendMessageAsync("", false, embed.Build());
+                    await Context.User.SendMessageAsync($"{target.Username} has been banned by {Context.User.Username}");
+                }
             }
-            else if (userAccount.NumberOfWarnings == 2)
+            catch (Exception e)
             {
-            }
-            else if (userAccount.NumberOfWarnings == 1)
-            {
-                SocketUser target = null;
-                var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
-                target = mentionedUser ?? Context.User;
-
-                var embed = new EmbedBuilder();
-                embed.WithTitle($"You've been warned by {Context.User.Username}!");
-                embed.WithDescription($"Reason: {reason}");
-                embed.WithColor(new Color(0, 255, 255));
-                embed.WithCurrentTimestamp();
-
-                await target.SendMessageAsync("", false, embed.Build());
-                await Context.User.SendMessageAsync($"{target.Username} has been banned by {Context.User.Username}");
+                ExceptionAlert(Context, e);
             }
         }
 
@@ -70,19 +77,26 @@ namespace ZanoxDiscordBot.Modules
         [RequireBotPermission(GuildPermission.KickMembers)]
         public async Task KickUser(IGuildUser user, string reason = "No Reason Provided.")
         {
-            SocketUser target = null;
-            var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
-            target = mentionedUser ?? Context.User;
+            try
+            {
+                SocketUser target = null;
+                var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
+                target = mentionedUser ?? Context.User;
 
-            var embed = new EmbedBuilder();
-            embed.WithTitle($"You've been kicked by {Context.User.Username}!");
-            embed.WithDescription($"Reason: {reason}");
-            embed.WithColor(new Color(0, 255, 255));
-            embed.WithCurrentTimestamp();
+                var embed = new EmbedBuilder();
+                embed.WithTitle($"You've been kicked by {Context.User.Username}!");
+                embed.WithDescription($"Reason: {reason}");
+                embed.WithColor(new Color(0, 255, 255));
+                embed.WithCurrentTimestamp();
 
-            await target.SendMessageAsync("", false, embed.Build());
-            await Context.User.SendMessageAsync($"{target.Username} has been banned by {Context.User.Username}");
-            await user.KickAsync(reason);
+                await target.SendMessageAsync("", false, embed.Build());
+                await Context.User.SendMessageAsync($"{target.Username} has been banned by {Context.User.Username}");
+                await user.KickAsync(reason);
+            }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         [Command("z!ban")]
@@ -90,19 +104,26 @@ namespace ZanoxDiscordBot.Modules
         [RequireBotPermission(GuildPermission.BanMembers)]
         public async Task BanUser(IGuildUser user, string reason = "No Reason Provided.")
         {
-            SocketUser target = null;
-            var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
-            target = mentionedUser ?? Context.User;
+            try
+            {
+                SocketUser target = null;
+                var mentionedUser = Context.Message.MentionedUsers.FirstOrDefault();
+                target = mentionedUser ?? Context.User;
 
-            var embed = new EmbedBuilder();
-            embed.WithTitle($"You've been kicked by {Context.User.Username}!");
-            embed.WithDescription($"Reason: {reason}");
-            embed.WithColor(new Color(0, 255, 255));
-            embed.WithCurrentTimestamp();
+                var embed = new EmbedBuilder();
+                embed.WithTitle($"You've been kicked by {Context.User.Username}!");
+                embed.WithDescription($"Reason: {reason}");
+                embed.WithColor(new Color(0, 255, 255));
+                embed.WithCurrentTimestamp();
 
-            await target.SendMessageAsync("", false, embed.Build());
-            await Context.User.SendMessageAsync($"{target.Username} has been banned by {Context.User.Username}");
-            await user.Guild.AddBanAsync(user, 5, reason);
+                await target.SendMessageAsync("", false, embed.Build());
+                await Context.User.SendMessageAsync($"{target.Username} has been banned by {Context.User.Username}");
+                await user.Guild.AddBanAsync(user, 5, reason);
+            }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
 
@@ -146,7 +167,10 @@ namespace ZanoxDiscordBot.Modules
 
                 await Context.User.SendMessageAsync("", false, embed.Build());
             }
-            catch { }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         [Command("z!announcement")]
@@ -173,7 +197,10 @@ namespace ZanoxDiscordBot.Modules
                 await Task.Delay(3000);
                 await Context.Channel.SendMessageAsync("@everyone");
             }
-            catch { }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         [Command("z!say")]
@@ -192,7 +219,10 @@ namespace ZanoxDiscordBot.Modules
                 await Context.Message.DeleteAsync();
                 await Context.Channel.SendMessageAsync(message);
             }
-            catch { }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         [Command("z!8ball")]
@@ -213,7 +243,10 @@ namespace ZanoxDiscordBot.Modules
 
                 await Context.Channel.SendMessageAsync("", false, embed.Build());
             }
-            catch { }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         [Command("z!key")]
@@ -226,7 +259,10 @@ namespace ZanoxDiscordBot.Modules
                 await dmChannel.SendMessageAsync(Utilities.GetAlert("KEY"));
                 await Context.Message.DeleteAsync();
             }
-            catch { }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         private bool UserIsZanox(SocketGuildUser user)
@@ -244,7 +280,14 @@ namespace ZanoxDiscordBot.Modules
         [Command("z!discord")]
         public async Task Discord()
         {
-            await Context.Channel.SendMessageAsync("Discord: https://discord.gg/dWwBmxB.");
+            try
+            {
+                await Context.Channel.SendMessageAsync("Discord: https://discord.gg/dWwBmxB.");
+            }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         [Command("z!level")]
@@ -255,7 +298,10 @@ namespace ZanoxDiscordBot.Modules
                 uint level = 5;
                 await Context.Channel.SendMessageAsync($"{Context.User.Username} is level {level}!");
             }
-            catch { }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         [Command("z!stats")]
@@ -279,7 +325,10 @@ namespace ZanoxDiscordBot.Modules
 
                 await Context.Channel.SendMessageAsync("", false, embed.Build());
             }
-            catch { }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         [Command("+xp")]
@@ -312,7 +361,10 @@ namespace ZanoxDiscordBot.Modules
 
                 await Context.Channel.SendMessageAsync("", false, embed.Build());
             }
-            catch { }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         [Command("-xp")]
@@ -345,7 +397,10 @@ namespace ZanoxDiscordBot.Modules
 
                 await Context.Channel.SendMessageAsync("", false, embed.Build());
             }
-            catch { }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         [Command("z!profile")]
@@ -362,7 +417,10 @@ namespace ZanoxDiscordBot.Modules
 
                 await Context.Channel.SendMessageAsync("", false, embed.Build());
             }
-            catch { }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
 
         }
 
@@ -385,7 +443,10 @@ namespace ZanoxDiscordBot.Modules
 
                 await Context.Channel.SendMessageAsync("", false, embed.Build());
             }
-            catch { }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         [Command("+rep")]
@@ -438,7 +499,10 @@ namespace ZanoxDiscordBot.Modules
                     await Context.Channel.SendMessageAsync("", false, embed.Build());
                 }
             }
-            catch { }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         [Command("-rep")]
@@ -491,7 +555,10 @@ namespace ZanoxDiscordBot.Modules
                 }
 
             }
-            catch { }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         [Command("z!weather")]
@@ -502,7 +569,10 @@ namespace ZanoxDiscordBot.Modules
             {
                 var apiUrl = $"api.openweathermap.org/data/2.5/weather?q={city}";
             }
-            catch { }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         [Command("z!gotcha")]
@@ -537,29 +607,39 @@ namespace ZanoxDiscordBot.Modules
                     await Context.Channel.SendMessageAsync("Still on cooldown. " + ((userCooldown - Convert.ToInt32(unixT)) + 600) + " seconds left");
                 }
             }
-            catch { }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         [Command("z!ali-a")]
         public async Task alia()
         {
-            await Task.Delay(0);
-            await Context.Message.DeleteAsync();
-            var aliMsg = await Context.Channel.SendMessageAsync("**3**");
-            await Task.Delay(500);
-            await aliMsg.ModifyAsync(msg => msg.Content = "**2**");
-            await Task.Delay(500);
-            await aliMsg.ModifyAsync(msg => msg.Content = "**1**");
-            await Task.Delay(500);
-            await aliMsg.ModifyAsync(msg => msg.Content = "**DROP IT!**");
-            await Task.Delay(500);
-            await aliMsg.ModifyAsync(msg => msg.Content = "<a:alia1:522851639472685086><a:alia2:522851690060185648>\n<a:alia3:522851727087763476><a:alia4:522851784587214858>");
-            await Task.Delay(6000);
-            await aliMsg.DeleteAsync();
+            try
+            {
+                await Task.Delay(0);
+                await Context.Message.DeleteAsync();
+                var aliMsg = await Context.Channel.SendMessageAsync("**3**");
+                await Task.Delay(500);
+                await aliMsg.ModifyAsync(msg => msg.Content = "**2**");
+                await Task.Delay(500);
+                await aliMsg.ModifyAsync(msg => msg.Content = "**1**");
+                await Task.Delay(500);
+                await aliMsg.ModifyAsync(msg => msg.Content = "**DROP IT!**");
+                await Task.Delay(500);
+                await aliMsg.ModifyAsync(msg => msg.Content = "<a:alia1:522851639472685086><a:alia2:522851690060185648>\n<a:alia3:522851727087763476><a:alia4:522851784587214858>");
+                await Task.Delay(6000);
+                await aliMsg.DeleteAsync();
+            }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         [Command("z!unix")]
-        public async Task unixTime()
+        public async Task unixTime(SocketUser target = null)
         {
             try
             {
@@ -568,113 +648,219 @@ namespace ZanoxDiscordBot.Modules
                 unixT = unixT.Remove(10, unixT.Length - 10);
                 await Context.Channel.SendMessageAsync(unixT);
             }
-            catch { }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         [Command("z!welcome")]
         public async Task Test()
         {
-            var userImg = @"https://cdn.discordapp.com/avatars/" + Context.User.Id + @"/" + Context.User.AvatarId + @".png".Replace(" ", "%20");
-            string html = String.Format($"<html><head> <meta charset=\"utf-8\"> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"> <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/css/bootstrap.min.css\"></head><body style=\"overflow:hidden;background-image:url(&quot;http://92.244.209.118/DMNHosting/api/discord/welcomeAssets/img/eS4IxK3.png&quot;);\"> <div style=\"display:table;position:absolute;top:0;left:0;height:100%;width:100%;\"> <div style=\"display:table-cell;vertical-align:middle;\"> <div style=\"margin-left:auto;margin-right:auto;text-align:center;\"><img src=\"{userImg}\" style=\"height:125px;width:125px;\"><div></div>\" <div style=\"color:#FFF;\"><h1 style=\"font-size:25px;\"><b>Welcome to {Context.Guild.Name},</b></h1> <h1 style=\"font-size:15px;\"><b>{Context.User.Username}</b></h1> </div></div></div></div><script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js\"></script> <script src=\"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/js/bootstrap.bundle.min.js\"></script></body></html>");
+            try
+            {
+                var userImg = @"https://cdn.discordapp.com/avatars/" + Context.User.Id + @"/" + Context.User.AvatarId + @".png".Replace(" ", "%20");
+                string html = String.Format($"<html><head> <meta charset=\"utf-8\"> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"> <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/css/bootstrap.min.css\"></head><body style=\"overflow:hidden;background-image:url(&quot;http://92.244.209.118/DMNHosting/api/discord/welcomeAssets/img/eS4IxK3.png&quot;);\"> <div style=\"display:table;position:absolute;top:0;left:0;height:100%;width:100%;\"> <div style=\"display:table-cell;vertical-align:middle;\"> <div style=\"margin-left:auto;margin-right:auto;text-align:center;\"><img src=\"{userImg}\" style=\"height:125px;width:125px;\"><div></div>\" <div style=\"color:#FFF;\"><h1 style=\"font-size:25px;\"><b>Welcome to {Context.Guild.Name},</b></h1> <h1 style=\"font-size:15px;\"><b>{Context.User.Username}</b></h1> </div></div></div></div><script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js\"></script> <script src=\"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/js/bootstrap.bundle.min.js\"></script></body></html>");
 
-            var converter = new HtmlToImageConverter { Width = 500, Height = 250};
-            var jpgBytes = converter.GenerateImage(html, NReco.ImageGenerator.ImageFormat.Png);
-            await Context.Guild.DefaultChannel.SendMessageAsync("test");
-            await Context.Channel.SendFileAsync(new MemoryStream(jpgBytes), $"Welcome {Context.User.Username}.png");
+                var converter = new HtmlToImageConverter { Width = 500, Height = 250 };
+                var jpgBytes = converter.GenerateImage(html, NReco.ImageGenerator.ImageFormat.Png);
+                await Context.Guild.DefaultChannel.SendMessageAsync("test");
+                await Context.Channel.SendFileAsync(new MemoryStream(jpgBytes), $"Welcome {Context.User.Username}.png");
+            }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         [Command("z!setDefault")]
         public async Task setDef()
         {
-            await Task.Delay(0);
-            await Context.Channel.SendMessageAsync("Default Channel is now " + Context.Channel.Id + " as server " + Context.Guild.Id);
-            var account = UserAccounts.GetOrCreateAccount(Context.Guild.Id);
-            account.DefaultChannelID = Context.Channel.Id;
-            UserAccounts.SaveAccounts();
+            try
+            {
+                await Task.Delay(0);
+                await Context.Channel.SendMessageAsync("Default Channel is now " + Context.Channel.Id + " as server " + Context.Guild.Id);
+                var account = UserAccounts.GetOrCreateAccount(Context.Guild.Id);
+                account.DefaultChannelID = Context.Channel.Id;
+                UserAccounts.SaveAccounts();
+            }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         [Command("z!kick")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task hveTest(IGuildUser user, [Remainder] string reason = null)
         {
-            Console.WriteLine("Kicked " + user.Username);
-            await user.KickAsync();
-            await user.Guild.AddBanAsync(user, reason: reason);
+            try
+            {
+                Console.WriteLine("Kicked " + user.Username);
+                await user.KickAsync();
+                await user.Guild.AddBanAsync(user, reason: reason);
+            }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         [Command("z!id")]
         public async Task ID()
         {
-            string json = "";
-            using (WebClient client = new WebClient())
+            try
             {
-                json = client.DownloadString("https://randomuser.me/api/?gender=?&nat=US");            
+                string json = "";
+                using (WebClient client = new WebClient())
+                {
+                    json = client.DownloadString("https://randomuser.me/api/?gender=?&nat=US");
+                }
+
+                var dataObject = JsonConvert.DeserializeObject<dynamic>(json);
+
+                string firstname = dataObject.results[0].name.first.ToString();
+                string lastname = dataObject.results[0].name.last.ToString();
+                string avatarURL = dataObject.results[0].picture.large.ToString();
+
+                var embed = new EmbedBuilder();
+                embed.WithThumbnailUrl(avatarURL);
+                embed.WithTitle("Generated ID");
+                embed.AddInlineField("First Name", firstname.First().ToString().ToUpper() + firstname.Substring(1));
+                embed.AddInlineField("Last Name", lastname.First().ToString().ToUpper() + lastname.Substring(1));
+
+                await Context.Channel.SendMessageAsync("", embed: embed);
             }
-
-            var dataObject = JsonConvert.DeserializeObject<dynamic>(json);
-
-            string firstname = dataObject.results[0].name.first.ToString();
-            string lastname = dataObject.results[0].name.last.ToString();
-            string avatarURL = dataObject.results[0].picture.large.ToString();
-
-            var embed = new EmbedBuilder();
-            embed.WithThumbnailUrl(avatarURL);
-            embed.WithTitle("Generated ID");
-            embed.AddInlineField("First Name", firstname.First().ToString().ToUpper() + firstname.Substring(1));
-            embed.AddInlineField("Last Name", lastname.First().ToString().ToUpper() + lastname.Substring(1));
-
-            await Context.Channel.SendMessageAsync("", embed: embed);
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
         }
 
         [Command("z!toggleServerLevelingAlert")]
         public async Task toggleServerLevelAlert()
         {
-            await Task.Delay(0);
-            var account = UserAccounts.GetOrCreateAccount(Context.Guild.Id);
-            if (account.levelingAlert == 0)
+            try
             {
-                account.levelingAlert = 1;
-                UserAccounts.SaveAccounts();
-                await Context.Channel.SendMessageAsync("Leveling Alerts has been on toggled for this server");
+                await Task.Delay(0);
+                var account = UserAccounts.GetOrCreateAccount(Context.Guild.Id);
+                if (account.levelingAlert == 0)
+                {
+                    account.levelingAlert = 1;
+                    UserAccounts.SaveAccounts();
+                    await Context.Channel.SendMessageAsync("Leveling Alerts has been on toggled for this server");
+                }
+                else
+                {
+                    account.levelingAlert = 0;
+                    UserAccounts.SaveAccounts();
+                    await Context.Channel.SendMessageAsync("Leveling Alerts has been toggled off for this server");
+                }
             }
-            else
+            catch (Exception e)
             {
-                account.levelingAlert = 0;
-                UserAccounts.SaveAccounts();
-                await Context.Channel.SendMessageAsync("Leveling Alerts has been toggled off for this server");
+                ExceptionAlert(Context, e);
             }
         }
 
         [Command("z!toggleLevelingAlert")]
         public async Task toggleLevelAlert()
         {
-            await Task.Delay(0);
-            var account = UserAccounts.GetOrCreateAccount(Context.Guild.Id);
-            if (account.levelingAlert == 0)
+            try
             {
-                account.levelingAlertChannel = 1;
-                UserAccounts.SaveAccounts();
-                await Context.Channel.SendMessageAsync("Leveling Alerts has been on toggled for this channel");
+                await Task.Delay(0);
+                var account = UserAccounts.GetOrCreateAccount(Context.Guild.Id);
+                if (account.levelingAlert == 0)
+                {
+                    account.levelingAlertChannel = 1;
+                    UserAccounts.SaveAccounts();
+                    await Context.Channel.SendMessageAsync("Leveling Alerts has been on toggled for this channel");
+                }
+                else
+                {
+                    account.levelingAlertChannel = 0;
+                    UserAccounts.SaveAccounts();
+                    await Context.Channel.SendMessageAsync("Leveling Alerts has been toggled off for this channel");
+                }
             }
-            else
+            catch (Exception e)
             {
-                account.levelingAlertChannel = 0;
-                UserAccounts.SaveAccounts();
-                await Context.Channel.SendMessageAsync("Leveling Alerts has been toggled off for this channel");
+                ExceptionAlert(Context, e);
             }
         }
 
         [Command("z!I accept all these rules")]
         public async Task acceptRulesOfficial()
         {
-            await Task.Delay(0);
-            if (Context.Channel.Id == 525282267715600404)
+            try
             {
-                Context.Message.DeleteAsync();
-                var user = Context.User;
-                var role = Context.Guild.Roles.FirstOrDefault(x => x.Name == "Member");
-                await (user as IGuildUser).AddRoleAsync(role);
+                await Task.Delay(0);
+                if (Context.Channel.Id == 525282267715600404)
+                {
+                    Context.Message.DeleteAsync();
+                    var user = Context.User;
+                    var role = Context.Guild.Roles.FirstOrDefault(x => x.Name == "Member");
+                    await (user as IGuildUser).AddRoleAsync(role);
+                }
             }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
+        }
+
+        [Command("z!getInvite")]
+        public async Task getinv()
+        {
+            try
+            {
+                var invites = await Context.Guild.GetInvitesAsync();
+
+                await Context.Channel.SendMessageAsync(invites.Select(x => x.Url).FirstOrDefault());
+            }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
+        }
+
+        [Command("z!emojify")]
+        public async Task emojify([Remainder]string msgC)
+        {
+            try
+            {
+                string msg = "";
+                var inputArray = msgC.ToCharArray();
+                foreach (int line in inputArray)
+                {
+                    if ((inputArray[line] >= 'a' && inputArray[line] <= 'z') || (inputArray[line] >= 'A' && inputArray[line] <= 'Z'))
+                    {
+                        msg = msg + ":regional_indicator_" + inputArray[line] + ": ";
+                    }
+                    if (inputArray[line] == Convert.ToChar(" "))
+                    {
+                        msg = msg + "   ";
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
+        }
+
+        public async Task ExceptionAlert(SocketCommandContext Context, Exception e)
+        {
+            try {
+                await Context.Channel.SendMessageAsync("Excetion! Exception details sent to bot devs :)");
+                var properties = e.GetType()
+                            .GetProperties();
+                var fields = properties
+                                 .Select(property => new {Name = property.Name, Value = property.GetValue(e, null)})
+                                 .Select(x => String.Format("{0} = {1}", x.Name,  x.Value != null ? x.Value.ToString() : String.Empty));
+                await Context.Client.GetUser((ulong)261418273009041408).SendMessageAsync(String.Join("\n", fields));
+            }
+            catch { }
         }
     }
 }

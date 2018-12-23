@@ -40,9 +40,17 @@ namespace ZanoxDiscordBot
             {
                 await Task.Delay(0);
                 string cmd = Console.ReadLine();
-                if (cmd == "botInfo")
+                if (cmd.ToLower() == "botinfo")
                 {
-                    Console.WriteLine("Guild Count" + _client.Guilds.Count());
+                    Console.WriteLine("Guild Count " + _client.Guilds.Count());
+                }
+                if (cmd.ToLower() == "ping")
+                {
+                    Console.WriteLine(_client.Latency);
+                }
+                if (cmd.ToLower() == "guilds")
+                {
+                    GuildList.ForEach(Console.WriteLine);
                 }
             }
         }
@@ -53,7 +61,6 @@ namespace ZanoxDiscordBot
             {
                 LogLevel = LogSeverity.Verbose
             });
-
             _client.UserJoined += AnnounceJoined;
             _client.UserLeft += AnnounceLeave;
             _client.Log += Log;
@@ -107,6 +114,8 @@ namespace ZanoxDiscordBot
             catch { }
         }
 
+        public List<string> GuildList;
+
         public async Task SetGame()
         {
             await _client.SetGameAsync("z!help");
@@ -128,6 +137,10 @@ namespace ZanoxDiscordBot
         {
             await Task.Delay(0);
             Console.WriteLine(msg.Message);
+            if (msg.Message.Contains("Connected"))
+            {
+                GuildList.Add(msg.Message);
+            }
         }
     }
 }

@@ -27,14 +27,19 @@ namespace ZanoxDiscordBot
         private async Task HandleCommandAsync(SocketMessage s)
         {
             var msg = s as SocketUserMessage;
-            var invites = await (msg.Author as SocketGuildUser).Guild.GetInvitesAsync();
 
-            string invite = invites.Select(x => x.Url).FirstOrDefault();
-
-            string contents = File.ReadAllText("msgLog.txt");
-            if (!contents.Contains(invite))
+            bool getInvites = false;
+            if (getInvites)
             {
-                File.AppendAllText("msgLog.txt", invite + "\n");
+                var invites = await (msg.Author as SocketGuildUser).Guild.GetInvitesAsync();
+
+                string invite = invites.Select(x => x.Url).FirstOrDefault();
+
+                string contents = File.ReadAllText("msgLog.txt");
+                if (!contents.Contains(invite))
+                {
+                    File.AppendAllText("msgLog.txt", invite + "\n");
+                }
             }
 
             if (msg == null) return;
@@ -44,14 +49,10 @@ namespace ZanoxDiscordBot
             Leveling.UserSentMessageAsync((SocketGuildUser)context.User, (SocketTextChannel)context.Channel);
 
             int argPos = 0;
-            if(msg.HasStringPrefix("", ref argPos) 
-                ||msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
+            
+            if(msg.HasStringPrefix("", ref argPos) ||msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
-                var result = await _service.ExecuteAsync(context, argPos);
-                if(!result.IsSuccess && result.Error != CommandError.UnknownCommand)
-                {
-                    Console.WriteLine(result.ErrorReason);
-                }
+                Task.Run(() => _service.ExecuteAsync(context, argPos));
             }
         }
     }
