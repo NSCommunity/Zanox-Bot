@@ -37,6 +37,7 @@ namespace ZanoxDiscordBot
         public async Task zConsole()
         {
             await Task.Delay(0);
+            List<string> UpdateLog = new List<string>();
             while (true)
             {
                 await Task.Delay(0);
@@ -45,11 +46,13 @@ namespace ZanoxDiscordBot
                 if (cmd.ToLower() == "botinfo")
                 {
                     Console.WriteLine("Guild Count " + _client.Guilds.Count());
+                    continue;
                 }
 
                 if (cmd.ToLower() == "ping")
                 {
                     Console.WriteLine(_client.Latency);
+                    continue;
                 }
 
                 if (cmd.ToLower() == "guilds")
@@ -62,6 +65,7 @@ namespace ZanoxDiscordBot
                         totalMembers+= i.Users.Count();
                     }
                     Console.WriteLine("That's a total of " + GList.Count() + " guilds with " + totalMembers + " members");
+                    continue;
                 }
 
                 if (cmd.ToLower() == "invites")
@@ -76,35 +80,45 @@ namespace ZanoxDiscordBot
                         Console.WriteLine(i.Name + " " + invites.Select(x => x.Url).FirstOrDefault());
                         tw.WriteLine(i.Name + " " + invites.Select(x => x.Url).FirstOrDefault());
                     }
+                    continue;
                 }
 
                 if (cmd.ToLower() == "changelog push")
                 {
                     var embed = new EmbedBuilder();
+                    embed.WithTitle("Updates");
                     for (int i = 0; i < UpdateLog.Count / 2; i++)
                     {
-                        embed.WithTitle("Updates");
                         embed.AddField(UpdateLog[i * 2], UpdateLog[i * 2 + 1]);
                     }
                     var ender = (_client.GetChannel(525301353816391700) as SocketTextChannel);
                     await ender.SendMessageAsync("", false, embed.Build());
+                    continue;
                 }
 
                 if (cmd.ToLower() == "changelog clear")
                 {
                     UpdateLog.Clear();
+                    continue;
                 }
 
                 if (cmd.ToLower().Contains("changelog add"))
                 {
                     cmd = cmd.Remove(0, 14);
                     var changelogAdd = cmd.Split('!').ToList();
-                    if (changelogAdd.Count % 2 == 0) { foreach (string line in changelogAdd) { UpdateLog.Add(line); } }
+                    if (changelogAdd.Count % 2 == 0)
+                    {
+                        foreach (string line in changelogAdd)
+                        {
+                            Console.WriteLine("Added " + line);
+                            UpdateLog.Add(line);
+                        }
+                    }
+                    continue;
                 }
             }
         }
 
-        public static List<string> UpdateLog;
         
         public static List<IUserMessage> reactionWatch;
 
