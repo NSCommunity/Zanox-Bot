@@ -85,10 +85,9 @@ namespace ZanoxDiscordBot
                     {
                         embed.WithTitle("Updates");
                         embed.AddField(UpdateLog[i * 2], UpdateLog[i * 2 + 1]);
-
-                        var ender = (_client.GetChannel(525301353816391700) as SocketTextChannel);
-                        await ender.SendMessageAsync("", false, embed.Build());
                     }
+                    var ender = (_client.GetChannel(525301353816391700) as SocketTextChannel);
+                    await ender.SendMessageAsync("", false, embed.Build());
                 }
 
                 if (cmd.ToLower() == "changelog clear")
