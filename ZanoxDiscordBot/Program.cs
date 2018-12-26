@@ -83,8 +83,8 @@ namespace ZanoxDiscordBot
                     var embed = new EmbedBuilder();
                     for (int i = 0; i < UpdateLog.Count / 2; i++)
                     {
-                        embed.WithTitle("Updates :D");
-                        embed.AddField("Fix!", "Fixed leveling alert setting of induvidual channels");
+                        embed.WithTitle("Updates");
+                        embed.AddField(UpdateLog[i * 2], UpdateLog[i * 2 + 1]);
 
                         var ender = (_client.GetChannel(525301353816391700) as SocketTextChannel);
                         await ender.SendMessageAsync("", false, embed.Build());
