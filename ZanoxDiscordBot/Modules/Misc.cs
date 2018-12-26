@@ -141,31 +141,49 @@ namespace ZanoxDiscordBot.Modules
         {
             try
             {
+                //Let user know we've sent the help information to their DMs
                 var embed = new EmbedBuilder();
                 embed.WithTitle($":mailbox_with_mail: The help message has been send to you in dms!");
-                embed.WithDescription("");
+                embed.WithDescription(" ");
                 embed.WithColor(new Color(0, 255, 255));
                 embed.WithCurrentTimestamp();
-
-                await Context.Channel.SendMessageAsync("", false, embed.Build());
+                await Context.Channel.SendMessageAsync(" ", false, embed.Build());
 
                 var message = new EmbedBuilder();
+                //Title
                 embed.WithTitle($"Zanox Bot Help");
                 embed.WithDescription("Commands for Zanox");
+
+                //Fun Commands
+                embed.AddField($"⠀", "⠀");
                 embed.AddField($"Fun Commands!", "fun commands for Zanox");
                 embed.AddField($"z!8ball", $"Chooses between an object | to seperate (!8ball {Context.User.Username}| Zanox Bot)");
                 embed.AddField($"z!gotcha {Context.User.Username}", $"Send the tagged person a little suprise!");
+
+                //Reputation
+                embed.AddField($"⠀", "⠀");
                 embed.AddField($"Reputation", "reputation commands for Zanox");
                 embed.AddField($"+rep {Context.User.Username} reason", $"Adds a reputation point to the tagged member.");
                 embed.AddField($"-rep {Context.User.Username} reason", $"Removes a reputation point to the tagged member.");
                 embed.AddField($"z!rep {Context.User.Username} reason", $"Check the amounts of rep points a person has.");
+
+                //Leveling
+                embed.AddField($"⠀", "⠀");
                 embed.AddField($"Levels", $"Level commands for Zanox");
                 embed.AddField($"z!stats {Context.User.Username}", $"Check the Level and XP of a member.");
                 embed.WithColor(new Color(0, 255, 255));
                 embed.WithCurrentTimestamp();
                 embed.WithFooter(Context.User.GetAvatarUrl());
 
-                await Context.User.SendMessageAsync("", false, embed.Build());
+                var react = await Context.User.SendMessageAsync("", false, embed.Build());
+
+                var yes = new Emoji("✅");
+                react.AddReactionAsync(yes);
+
+                var no = new Emoji("❌");
+                react.AddReactionAsync(no);
+
+                Program.reactionWatch.Add(react);
             }
             catch (Exception e)
             {
@@ -628,7 +646,7 @@ namespace ZanoxDiscordBot.Modules
                 await Task.Delay(500);
                 await aliMsg.ModifyAsync(msg => msg.Content = "**DROP IT!**");
                 await Task.Delay(500);
-                await aliMsg.ModifyAsync(msg => msg.Content = "<a:alia1:522851639472685086><a:alia2:522851690060185648>\n<a:alia3:522851727087763476><a:alia4:522851784587214858>");
+                await aliMsg.ModifyAsync(msg => msg.Content = "<a:alia1:525299680553205761><a:alia2:525299708156182538>\n<a:alia3:525299721254993930><a:alia4:525299735796514827>");
                 await Task.Delay(6000);
                 await aliMsg.DeleteAsync();
             }
@@ -769,16 +787,17 @@ namespace ZanoxDiscordBot.Modules
             try
             {
                 await Task.Delay(0);
-                var account = UserAccounts.GetOrCreateAccount(Context.Guild.Id);
+                var account = UserAccounts.GetOrCreateAccount(Context.Channel.Id);
+                Task.Delay(100);
                 if (account.levelingAlert == 0)
                 {
-                    account.levelingAlertChannel = 1;
+                    account.levelingAlert = 1;
                     UserAccounts.SaveAccounts();
                     await Context.Channel.SendMessageAsync("Leveling Alerts has been on toggled for this channel");
                 }
                 else
                 {
-                    account.levelingAlertChannel = 0;
+                    account.levelingAlert = 0;
                     UserAccounts.SaveAccounts();
                     await Context.Channel.SendMessageAsync("Leveling Alerts has been toggled off for this channel");
                 }
@@ -787,6 +806,13 @@ namespace ZanoxDiscordBot.Modules
             {
                 ExceptionAlert(Context, e);
             }
+        }
+
+        [Command("z!testGet")]
+        public async Task testGet()
+        {
+            var account = UserAccounts.GetOrCreateAccount(Context.Channel.Id);
+            await Context.Channel.SendMessageAsync("account = " + account.levelingAlert);
         }
 
         [Command("z!I accept all these rules")]
@@ -849,18 +875,57 @@ namespace ZanoxDiscordBot.Modules
             }
         }
 
+        [Command("z!purge")]
+        [RequireUserPermission(GuildPermission.ManageMessages)]
+        [RequireBotPermission(ChannelPermission.ManageMessages)]
+        public async Task PurgeChat(uint amount)
+        {
+            try
+            {
+                var messages = await this.Context.Channel.GetMessagesAsync((int)amount + 1).Flatten();
+
+                await this.Context.Channel.DeleteMessagesAsync(messages);
+                const int delay = 5000;
+                var m = await this.ReplyAsync($"Purge completed. _This message will be deleted in {delay / 1000} seconds._");
+                await Task.Delay(delay);
+                await m.DeleteAsync();
+            }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
+        }
+
+        [Command("z!throwException")]
+        public async Task ThrowException()
+        {
+            try
+            {
+                throw new Exception();
+            }
+            catch (Exception e)
+            {
+                ExceptionAlert(Context, e);
+            }
+        }
+
         public async Task ExceptionAlert(SocketCommandContext Context, Exception e)
         {
             try {
-                await Context.Channel.SendMessageAsync("Excetion! Exception details sent to bot devs :)");
+                await Context.Channel.SendMessageAsync("There was an exception! I've told my creators about all the details! \n Do you them to contact you?");
                 var properties = e.GetType()
                             .GetProperties();
                 var fields = properties
                                  .Select(property => new {Name = property.Name, Value = property.GetValue(e, null)})
                                  .Select(x => String.Format("{0} = {1}", x.Name,  x.Value != null ? x.Value.ToString() : String.Empty));
+                await Context.Client.GetUser((ulong)261418273009041408).SendMessageAsync(Context.User.Username + "#" + Context.User.Discriminator + " is having some issues!");
+                await Context.Client.GetUser((ulong)261418273009041408).SendMessageAsync("Command issued: " + Context.Message.Content);
                 await Context.Client.GetUser((ulong)261418273009041408).SendMessageAsync(String.Join("\n", fields));
             }
-            catch { }
+            catch (Exception ex)
+            {
+                ExceptionAlert(Context, ex);
+            }
         }
     }
 }

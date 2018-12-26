@@ -8,6 +8,7 @@ using Discord;
 using System.IO;
 using Discord.Net;
 using Discord.Commands;
+using Discord.Rest;
 using Discord.Webhook;
 using NReco.ImageGenerator;
 using ZanoxDiscordBot.Core.UserAccounts;
@@ -40,20 +41,51 @@ namespace ZanoxDiscordBot
             {
                 await Task.Delay(0);
                 string cmd = Console.ReadLine();
+
                 if (cmd.ToLower() == "botinfo")
                 {
                     Console.WriteLine("Guild Count " + _client.Guilds.Count());
                 }
+
                 if (cmd.ToLower() == "ping")
                 {
                     Console.WriteLine(_client.Latency);
                 }
+
                 if (cmd.ToLower() == "guilds")
                 {
-                    GuildList.ForEach(Console.WriteLine);
+                    List<SocketGuild> GList = _client.Guilds.ToList();
+                    int totalMembers = 0;
+                    foreach (SocketGuild i in GList)
+                    {
+                        Console.WriteLine(i.Name + " (" + i.Users.Count().ToString() + " Memebers)");
+                        totalMembers+= i.Users.Count();
+                    }
+                    Console.WriteLine("That's a total of " + GList.Count() + " guilds with " + totalMembers + " members");
+                }
+
+                if (cmd.ToLower() == "invites")
+                {
+                    Console.WriteLine("This will a while because of discord bot limitations, I will save them to a file, and tell you about it when it's done!");
+                    List<SocketGuild> GList = _client.Guilds.ToList();
+                    int totalMembers = 0;
+                    TextWriter tw = new StreamWriter("invites.txt", true);
+                    foreach (SocketGuild i in GList)
+                    {
+                        var invites = await i.GetInvitesAsync();
+                        Console.WriteLine(i.Name + " " + invites.Select(x => x.Url).FirstOrDefault());
+                        tw.WriteLine(i.Name + " " + invites.Select(x => x.Url).FirstOrDefault());
+                    }
+                }
+
+                if (cmd.ToLower() == "get")
+                {
+
                 }
             }
         }
+
+        public static List<IUserMessage> reactionWatch;
 
         public async Task StartAsync()
         {
@@ -85,9 +117,10 @@ namespace ZanoxDiscordBot
             string html = String.Format($"<html><head> <meta charset=\"utf-8\"> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"> <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/css/bootstrap.min.css\"></head><body style=\"overflow:hidden;background-image:url(&quot;http://92.244.209.118/DMNHosting/api/discord/welcomeAssets/img/eS4IxK3.png&quot;);\"> <div style=\"display:table;position:absolute;top:0;left:0;height:100%;width:100%;\"> <div style=\"display:table-cell;vertical-align:middle;\"> <div style=\"margin-left:auto;margin-right:auto;text-align:center;\"><img src=\"{userImg}\" style=\"height:125px;width:125px;\"><div></div>\" <div style=\"color:#FFF;\"><h1 style=\"font-size:25px;\"><b>Welcome to {user.Guild.Name},</b></h1> <h1 style=\"font-size:15px;\"><b>{user.Username}</b></h1> </div></div></div></div><script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js\"></script> <script src=\"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/js/bootstrap.bundle.min.js\"></script></body></html>");
 
             var converter = new HtmlToImageConverter { Width = 500, Height = 250 };
-            byte[] jpgBytes = converter.GenerateImage(html, NReco.ImageGenerator.ImageFormat.Png);
-            File.WriteAllBytes($"Welcome {user.Username}.png", jpgBytes);
+            byte[] pngBytes = converter.GenerateImage(html, NReco.ImageGenerator.ImageFormat.Png);
+            File.WriteAllBytes($"Welcome {user.Username}.png", pngBytes);
             await channel.SendFileAsync($"Welcome {user.Username}.png", $"Welcome, {user.Mention}");
+            await Task.Delay(100);
             try
             {
                 File.Delete($"Welcome {user.Username}.png");

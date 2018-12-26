@@ -38,7 +38,5 @@ namespace ZanoxDiscordBot.Core.UserAccounts
         public ulong DefaultChannelID { get; set; }
 
         public int levelingAlert { get; set; }
-
-        public int levelingAlertChannel { get; set; }
     }
 }
