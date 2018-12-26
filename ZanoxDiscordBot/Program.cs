@@ -78,13 +78,35 @@ namespace ZanoxDiscordBot
                     }
                 }
 
-                if (cmd.ToLower() == "get")
+                if (cmd.ToLower() == "changelog push")
                 {
+                    var embed = new EmbedBuilder();
+                    for (int i = 0; i < UpdateLog.Count / 2; i++)
+                    {
+                        embed.WithTitle("Updates :D");
+                        embed.AddField("Fix!", "Fixed leveling alert setting of induvidual channels");
 
+                        var ender = (_client.GetChannel(525301353816391700) as SocketTextChannel);
+                        await ender.SendMessageAsync("", false, embed.Build());
+                    }
+                }
+
+                if (cmd.ToLower() == "changelog clear")
+                {
+                    UpdateLog.Clear();
+                }
+
+                if (cmd.ToLower().Contains("changelog add"))
+                {
+                    cmd = cmd.Remove(0, 14);
+                    var changelogAdd = cmd.Split('!').ToList();
+                    if (changelogAdd.Count % 2 == 0) { foreach (string line in changelogAdd) { UpdateLog.Add(line); } }
                 }
             }
         }
 
+        public static List<string> UpdateLog;
+        
         public static List<IUserMessage> reactionWatch;
 
         public async Task StartAsync()

@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using NReco.ImageGenerator;
 using System.IO;
+using System.Diagnostics;
 
 namespace ZanoxDiscordBot.Modules
 {
@@ -182,8 +183,6 @@ namespace ZanoxDiscordBot.Modules
 
                 var no = new Emoji("❌");
                 react.AddReactionAsync(no);
-
-                Program.reactionWatch.Add(react);
             }
             catch (Exception e)
             {
@@ -912,6 +911,12 @@ namespace ZanoxDiscordBot.Modules
         public async Task ExceptionAlert(SocketCommandContext Context, Exception e)
         {
             try {
+                // Get stack trace for the exception with source file information
+                var st = new StackTrace(e, true);
+                // Get the top stack frame
+                var frame = st.GetFrame(0);
+                // Get the line number from the stack frame
+                var line = frame.GetFileLineNumber();
                 await Context.Channel.SendMessageAsync("There was an exception! I've told my creators about all the details! \n Do you them to contact you?");
                 var properties = e.GetType()
                             .GetProperties();
@@ -919,6 +924,7 @@ namespace ZanoxDiscordBot.Modules
                                  .Select(property => new {Name = property.Name, Value = property.GetValue(e, null)})
                                  .Select(x => String.Format("{0} = {1}", x.Name,  x.Value != null ? x.Value.ToString() : String.Empty));
                 await Context.Client.GetUser((ulong)261418273009041408).SendMessageAsync(Context.User.Username + "#" + Context.User.Discriminator + " is having some issues!");
+                await Context.Client.GetUser((ulong)261418273009041408).SendMessageAsync("Line: " + line);
                 await Context.Client.GetUser((ulong)261418273009041408).SendMessageAsync("Command issued: " + Context.Message.Content);
                 await Context.Client.GetUser((ulong)261418273009041408).SendMessageAsync(String.Join("\n", fields));
             }
