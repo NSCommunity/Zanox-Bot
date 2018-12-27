@@ -584,7 +584,18 @@ namespace ZanoxDiscordBot.Modules
             await Task.Delay(0);
             try
             {
-                var apiUrl = $"api.openweathermap.org/data/2.5/weather?q={city}";
+                EmbedBuilder embed = new EmbedBuilder();
+                embed.WithTitle("Zanox Weather");
+                embed.WithImageUrl($"https://www.countryflags.io/{getStringFromUrl($"http://zanoxhosting.ga/api/weather/country.php?q={city}")}/flat/64.png");
+                embed.AddInlineField(
+                    getStringFromUrl($"http://zanoxhosting.ga/api/weather/temperature.php?q={city}&u=C")
+                    + "℃",
+                    getStringFromUrl($"http://zanoxhosting.ga/api/weather/city.php?q={city}")
+                    + ", " +
+                    getStringFromUrl($"http://zanoxhosting.ga/api/weather/country.php?q={city}"));
+                embed.AddInlineField("Weather Status",
+                    getStringFromUrl($"http://zanoxhosting.ga/api/weather/weather.php?q={city}"));
+                await Context.Channel.SendMessageAsync("", false, embed.Build());
             }
             catch (Exception e)
             {
@@ -908,6 +919,27 @@ namespace ZanoxDiscordBot.Modules
             }
         }
 
+        [Command("z!guilds")]
+        public async Task guilds()
+        {
+            string list = "```";
+            List<SocketGuild> GList = Context.Client.Guilds.ToList();
+            int totalMembers = 0;
+            foreach (SocketGuild i in GList)
+            {
+                list = list + i.Name + " (" + i.Users.Count().ToString() + " members) \n";
+                totalMembers += i.Users.Count();
+            }
+            list = list + "\nThat's a total of " + GList.Count() + " guilds with " + totalMembers + " members```";
+            await Context.Channel.SendMessageAsync(list);
+        }
+
+        [Command("z!brag")]
+        public async Task brag()
+        {
+            Task.Run(guilds);
+        }
+
         public async Task ExceptionAlert(SocketCommandContext Context, Exception e)
         {
             try {
@@ -932,6 +964,19 @@ namespace ZanoxDiscordBot.Modules
             {
                 ExceptionAlert(Context, ex);
             }
+        }
+
+        public static String getStringFromUrl(string Url)
+        {
+            HttpWebRequest myRequest = (HttpWebRequest)WebRequest.Create(Url);
+            myRequest.Method = "GET";
+            WebResponse myResponse = myRequest.GetResponse();
+            StreamReader sr = new StreamReader(myResponse.GetResponseStream(), System.Text.Encoding.UTF8);
+            string result = sr.ReadToEnd();
+            sr.Close();
+            myResponse.Close();
+
+            return result;
         }
     }
 }
