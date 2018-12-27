@@ -579,7 +579,7 @@ namespace ZanoxDiscordBot.Modules
         }
 
         [Command("z!weather")]
-        public async Task Weather(string city)
+        public async Task Weather([Remainder]string city)
         {
             await Task.Delay(0);
             try
@@ -938,6 +938,42 @@ namespace ZanoxDiscordBot.Modules
         public async Task brag()
         {
             Task.Run(guilds);
+        }
+
+        [Command("z!ParallelRes")]
+        public async Task PRes([Remainder]string input)
+        {
+            await Task.Delay(0);
+            var inputList = input.Split('!').ToList();
+            decimal total = 0;
+            foreach(string lines in inputList)
+            {
+                total += (1 / Convert.ToDecimal(lines));
+            }
+            await Context.Channel.SendMessageAsync(Convert.ToString(1 / total));
+        }
+
+        
+        [Command("z!tts")]
+        [RequireUserPermission(GuildPermission.SendTTSMessages)]
+        public async Task TheArrr([Remainder]string input)
+        {
+            var delete = await Context.Channel.SendMessageAsync(input, true);
+            delete.DeleteAsync();
+        }
+
+        [Command("z!Dog")]
+        [RequireUserPermission(GuildPermission.AttachFiles)]
+        public async Task dog()
+        {
+            string json = getStringFromUrl(@"https://dog.ceo/api/breeds/image/random");
+            json = json.Remove(0, 31).Remove(json.Length - 33, 2).Replace(@"\", "");
+            var dogUrl = new Uri(json);
+            using (WebClient client = new WebClient())
+            {
+                client.DownloadFile(new Uri(json), @"dog." + json.Remove(0, json.Length - 3));
+            }
+            await Context.Channel.SendFileAsync("dog." + json.Remove(0, json.Length - 3));
         }
 
         public async Task ExceptionAlert(SocketCommandContext Context, Exception e)
