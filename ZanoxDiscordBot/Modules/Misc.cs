@@ -860,6 +860,12 @@ namespace ZanoxDiscordBot.Modules
             }
         }
 
+        [Command("z!ascii")]
+        public async Task asciify([Remainder]string input)
+        {
+            await Context.Channel.SendMessageAsync("```" + getStringFromUrl("http://artii.herokuapp.com/make?text=" + input) + "```");
+        }
+
         [Command("z!emojify")]
         public async Task emojify([Remainder]string msgC)
         {
@@ -873,9 +879,12 @@ namespace ZanoxDiscordBot.Modules
                     {
                         msg = msg + ":regional_indicator_" + inputArray[line] + ": ";
                     }
-                    if (inputArray[line] == Convert.ToChar(" "))
+                    else
                     {
-                        msg = msg + "   ";
+                        if (inputArray[line] == Convert.ToChar(" "))
+                        {
+                            msg = msg + "   ";
+                        }
                     }
                 }
             }
@@ -1004,15 +1013,11 @@ namespace ZanoxDiscordBot.Modules
 
         public static String getStringFromUrl(string Url)
         {
-            HttpWebRequest myRequest = (HttpWebRequest)WebRequest.Create(Url);
-            myRequest.Method = "GET";
-            WebResponse myResponse = myRequest.GetResponse();
-            StreamReader sr = new StreamReader(myResponse.GetResponseStream(), System.Text.Encoding.UTF8);
-            string result = sr.ReadToEnd();
-            sr.Close();
-            myResponse.Close();
-
-            return result;
+            using (WebClient client = new WebClient())
+            {
+                string result = client.DownloadString(Url);
+                return result;
+            }
         }
     }
 }
