@@ -35,7 +35,37 @@ namespace ZanoxDiscordBot
                 embed.AddInlineField(output, "Fixed by Zanox");
                 msg.Channel.SendMessageAsync("", false, embed.Build());
             }
+            if (!msg.Author.IsBot && msg.Content.Any(char.IsDigit) && msg.Content.Contains("14ify"))
+            {
+                char[] fourteen = msg.Content.ToCharArray();
+                string fourteenString = "";
+                bool prevNumber = false;
+                foreach (char inp in fourteen)
+                {
+                    long x;
+                    bool canConvert = long.TryParse(Convert.ToString(inp), out x);
+                    if (canConvert)
+                    {
+                        if (!prevNumber)
+                        {
+                            fourteenString += "14";
+                            prevNumber = true;
+                        }
+                    }
+                    else
+                    {
+                        fourteenString += inp;
+                        prevNumber = false;
+                    }
+                }
+                msg.DeleteAsync();
+                EmbedBuilder embed = new EmbedBuilder();
+                embed.WithAuthor(msg.Author);
+                embed.AddInlineField(fourteenString, "Fixed by Zanox");
+                msg.Channel.SendMessageAsync("", false, embed.Build());
+            }
         }
+        
 
         public async Task zConsole()
         {
