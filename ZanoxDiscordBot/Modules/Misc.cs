@@ -955,11 +955,20 @@ namespace ZanoxDiscordBot.Modules
             await Task.Delay(0);
             var inputList = input.Split('!').ToList();
             decimal total = 0;
-            foreach(string lines in inputList)
+            foreach (string lines in inputList)
             {
                 total += (1 / Convert.ToDecimal(lines));
             }
             await Context.Channel.SendMessageAsync(Convert.ToString(1 / total));
+        }
+
+        [Command("z!Lumens")]
+        public async Task Lumy([Remainder]string input)
+        {
+            await Task.Delay(0);
+            var inputList = input.Split('!').ToList();
+            decimal total = Convert.ToInt32(inputList[0]) * Convert.ToInt32(inputList[1]);
+            await Context.Channel.SendMessageAsync(Convert.ToString(total));
         }
 
         [Command("z!serverID")]
