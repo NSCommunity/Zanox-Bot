@@ -143,7 +143,7 @@ namespace ZanoxDiscordBot
                 if (cmd.ToLower().Contains("changelog add"))
                 {
                     cmd = cmd.Remove(0, 14);
-                    var changelogAdd = cmd.Split('!').ToList();
+                    var changelogAdd = cmd.Split('¤').ToList();
                     if (changelogAdd.Count % 2 == 0)
                     {
                         foreach (string line in changelogAdd)
