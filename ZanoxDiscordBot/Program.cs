@@ -34,7 +34,7 @@ namespace ZanoxDiscordBot
                 EmbedBuilder embed = new EmbedBuilder();
                 embed.WithAuthor(msg.Author);
                 embed.AddInlineField(output, "Fixed by Zanox");
-                msg.Channel.SendMessageAsync("", false, embed.Build());
+                await msg.Channel.SendMessageAsync("", false, embed.Build());
             }
 
             if (!msg.Author.IsBot && msg.Content.Any(char.IsDigit) && msg.Content.Contains("14ify"))
