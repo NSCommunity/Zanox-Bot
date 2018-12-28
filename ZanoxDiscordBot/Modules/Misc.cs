@@ -962,7 +962,12 @@ namespace ZanoxDiscordBot.Modules
             await Context.Channel.SendMessageAsync(Convert.ToString(1 / total));
         }
 
-        
+        [Command("z!serverID")]
+        public async Task serverID()
+        {
+            await Context.Channel.SendMessageAsync(Context.Guild.Id.ToString());
+        }
+
         [Command("z!tts")]
         [RequireUserPermission(GuildPermission.SendTTSMessages)]
         public async Task TheArrr([Remainder]string input)

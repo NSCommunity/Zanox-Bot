@@ -25,7 +25,7 @@ namespace ZanoxDiscordBot
         public async Task antiBrag(SocketMessage msg)
         {
             await Task.Delay(0);
-            if (msg.Content.ToLower().Contains("idiot") || msg.Content.ToLower().Contains("stop"))
+            if (msg.Content.ToLower().Contains("idiot") || msg.Content.ToLower().Contains("stop") || (msg.Author as SocketGuildUser).Guild.Id == 525056817399726102)
             {
                 msg.DeleteAsync();
                 var output = msg.Content.Replace("idiot", "idot");
