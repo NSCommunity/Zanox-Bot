@@ -22,52 +22,55 @@ namespace ZanoxDiscordBot
 
         static void Main(string[] args) => new Program().StartAsync().GetAwaiter().GetResult();
 
-        public async Task antiBrag(SocketMessage msg)
+        public async Task additionalHandler(SocketMessage msg)
         {
             await Task.Delay(0);
-            if (msg.Content.ToLower().Contains("idiot") || msg.Content.ToLower().Contains("stop") || (msg.Author as SocketGuildUser).Guild.Id == 525056817399726102)
+            if ((msg.Author as SocketGuildUser).Guild.Id == 525056817399726102)
             {
-                msg.DeleteAsync();
-                var output = msg.Content.Replace("idiot", "idot");
-                output = msg.Content.Replace("stop", "sotp");
-                await msg.Author.SendMessageAsync("It seems like you misspelled the message, I have fixed it for you :D");
-                EmbedBuilder embed = new EmbedBuilder();
-                embed.WithAuthor(msg.Author);
-                embed.AddInlineField(output, "Fixed by Zanox");
-                await msg.Channel.SendMessageAsync("", false, embed.Build());
-            }
-
-            if (!msg.Author.IsBot && msg.Content.Any(char.IsDigit) && msg.Content.Contains("14ify"))
-            {
-                char[] fourteen = msg.Content.ToCharArray();
-                string fourteenString = "";
-                bool prevNumber = false;
-                foreach (char inp in fourteen)
+                if (msg.Content.ToLower().Contains("idiot") || msg.Content.ToLower().Contains("stop"))
                 {
-                    long x;
-                    bool canConvert = long.TryParse(Convert.ToString(inp), out x);
-                    if (canConvert)
+                    msg.DeleteAsync();
+                    var output = msg.Content.Replace("idiot", "idot");
+                    await Task.Delay(10);
+                    output = output.Replace("stop", "sotp");
+                    await msg.Author.SendMessageAsync("It seems like you misspelled the message, I have fixed it for you :D");
+                    EmbedBuilder embed = new EmbedBuilder();
+                    embed.WithAuthor(msg.Author);
+                    embed.AddInlineField(output, "Fixed by Zanox");
+                    await msg.Channel.SendMessageAsync("", false, embed.Build());
+                }
+
+                if (!msg.Author.IsBot && msg.Content.Any(char.IsDigit) && msg.Content.Contains("14ify"))
+                {
+                    char[] fourteen = msg.Content.ToCharArray();
+                    string fourteenString = "";
+                    bool prevNumber = false;
+                    foreach (char inp in fourteen)
                     {
-                        if (!prevNumber)
+                        long x;
+                        bool canConvert = long.TryParse(Convert.ToString(inp), out x);
+                        if (canConvert)
                         {
-                            fourteenString += "14";
-                            prevNumber = true;
+                            if (!prevNumber)
+                            {
+                                fourteenString += "14";
+                                prevNumber = true;
+                            }
+                        }
+                        else
+                        {
+                            fourteenString += inp;
+                            prevNumber = false;
                         }
                     }
-                    else
-                    {
-                        fourteenString += inp;
-                        prevNumber = false;
-                    }
+                    msg.DeleteAsync();
+                    EmbedBuilder embed = new EmbedBuilder();
+                    embed.WithAuthor(msg.Author);
+                    embed.AddInlineField(fourteenString, "Fixed by Zanox");
+                    msg.Channel.SendMessageAsync("", false, embed.Build());
                 }
-                msg.DeleteAsync();
-                EmbedBuilder embed = new EmbedBuilder();
-                embed.WithAuthor(msg.Author);
-                embed.AddInlineField(fourteenString, "Fixed by Zanox");
-                msg.Channel.SendMessageAsync("", false, embed.Build());
             }
         }
-        
 
         public async Task zConsole()
         {
@@ -167,7 +170,7 @@ namespace ZanoxDiscordBot
             _client.UserLeft += AnnounceLeave;
             _client.Log += Log;
             Task.Run(zConsole);
-            _client.MessageReceived += antiBrag;
+            _client.MessageReceived += additionalHandler;
             string hiddenToken = File.ReadLines(@"Resources\token.token").First();
             await _client.LoginAsync(TokenType.Bot, hiddenToken);
             await _client.StartAsync();
