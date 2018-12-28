@@ -25,10 +25,11 @@ namespace ZanoxDiscordBot
         public async Task antiBrag(SocketMessage msg)
         {
             await Task.Delay(0);
-            if (msg.Content.ToLower().Contains("idiot"))
+            if (msg.Content.ToLower().Contains("idiot") || msg.Content.ToLower().Contains("stop"))
             {
                 msg.DeleteAsync();
                 var output = msg.Content.Replace("idiot", "idot");
+                output = msg.Content.Replace("stop", "sotp");
                 await msg.Author.SendMessageAsync("It seems like you misspelled the message, I have fixed it for you :D");
                 EmbedBuilder embed = new EmbedBuilder();
                 embed.WithAuthor(msg.Author);
