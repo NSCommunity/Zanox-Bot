@@ -27,12 +27,12 @@ namespace ZanoxDiscordBot
             await Task.Delay(0);
             if ((msg.Author as SocketGuildUser).Guild.Id == 525056817399726102)
             {
-                if (msg.Content.ToLower().Contains("idiot") || msg.Content.ToLower().Contains("stop"))
+                if (msg.Content.ToLower().Contains("idiot") || msg.Content.ToLower().Contains("stop") || msg.Content.ToLower().Contains("st0p"))
                 {
                     msg.DeleteAsync();
-                    var output = msg.Content.Replace("idiot", "idot");
-                    await Task.Delay(10);
+                    var output = msg.Content.ToLower().Replace("idiot", "idot");
                     output = output.Replace("stop", "sotp");
+                    output = output.Replace("st0p", "sotp");
                     await msg.Author.SendMessageAsync("It seems like you misspelled the message, I have fixed it for you :D");
                     EmbedBuilder embed = new EmbedBuilder();
                     embed.WithAuthor(msg.Author);

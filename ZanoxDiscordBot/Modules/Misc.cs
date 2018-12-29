@@ -221,18 +221,11 @@ namespace ZanoxDiscordBot.Modules
         }
 
         [Command("z!say")]
-        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task Say([Remainder]string message)
         {
             try
             {
                 var u = Context.User as SocketGuildUser;
-                var permission = u.GuildPermissions.Administrator;
-                if (!permission)
-                {
-                    await Context.Channel.SendMessageAsync(":x: You do not have permission to use this command " + Context.User.Mention + "!");
-                    return;
-                }
                 await Context.Message.DeleteAsync();
                 await Context.Channel.SendMessageAsync(message);
             }
@@ -997,6 +990,13 @@ namespace ZanoxDiscordBot.Modules
                 client.DownloadFile(new Uri(json), @"dog." + json.Remove(0, json.Length - 3));
             }
             await Context.Channel.SendFileAsync("dog." + json.Remove(0, json.Length - 3));
+        }
+
+        [Command("z!f")]
+        public async Task ffff([Remainder]string input)
+        {
+            while (true)
+                Context.Channel.SendMessageAsync(input);
         }
 
         public async Task ExceptionAlert(SocketCommandContext Context, Exception e)
