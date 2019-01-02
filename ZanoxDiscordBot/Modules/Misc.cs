@@ -16,6 +16,7 @@ using System.Net.Http;
 using NReco.ImageGenerator;
 using System.IO;
 using System.Diagnostics;
+using System.Net.Sockets;
 
 namespace ZanoxDiscordBot.Modules
 {
@@ -596,6 +597,23 @@ namespace ZanoxDiscordBot.Modules
             }
         }
 
+        [Command("z!blockGotcha")]
+        public async Task GBlock()
+        {
+            var account = UserAccounts.GetAccount(Context.User);
+            if (account.GBlock.Equals(0))
+            {
+                account.GBlock = 1;
+                Context.Channel.SendMessageAsync("Now blocking the Gotcha Command");
+            }
+            else
+            {
+                account.GBlock = 0;
+                Context.Channel.SendMessageAsync("No longer blocking the Gotcha Command");
+            }
+            UserAccounts.SaveAccounts();
+        }
+
         [Command("z!gotcha")]
         public async Task Gotcha(SocketUser target = null)
         {
@@ -604,24 +622,33 @@ namespace ZanoxDiscordBot.Modules
                 target = target ?? Context.User;
 
                 var account = UserAccounts.GetAccount(Context.User);
+                var targetAccount = UserAccounts.GetAccount(target);
                 string unixT = (Convert.ToString((DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds));
                 unixT = unixT.Remove(10, unixT.Length - 10);
-                int userCooldown = account.GCooldown;
-                if (Convert.ToInt32(unixT) - 600 > userCooldown || target == Context.User)
+                int userCooldown = account.GCooldown; if (Convert.ToInt32(unixT) - 600 > userCooldown || target == Context.User)
                 {
-                    await target.SendMessageAsync($"**{Context.User.Username}** Gotcha!");
-                    await target.SendMessageAsync($"⠀⠀⠀⠀⠀⡼⡑⢅⠪⡐⠅⠪⡐⢌⠢⡑⠌⡢⢑⠌⠢⡑⠌⡢⠑⢌⠢⠑⡌⠰⡁⡣⢘⠵⢦⡀\n⠀⠀⠀⠀⢰⢍⠊⠔⠡⡈⠜⡠⠑⠄⢅⠌⡂⠢⡁⢊⠢⠘⢄⠊⢌⠂⢅⢑⢈⠢⡨⠠⡑⠨⠢⡫⡆\n⠀⠀⠀⠀⡗⢅⠑⡁⡑⠠⠊⡀⡑⠌⠐⠄⢊⠐⡨⠀⢅⠊⡠⠊⠠⠊⡠⠂⡁⠢⠐⡐⢈⠂⡑⢄⢙⢇⡀\n⠀⠀⠀⡸⡑⢌⠐⠄⢌⠐⡁⠔⢀⠊⡨⠠⢁⠢⢀⠑⠠⢂⠐⠌⡐⢁⠄⠌⠠⢁⠌⠠⠁⠔⢀⠢⢀⠣⢳⢄\n⠀⠀⢠⠫⡂⠔⢁⠂⠢⠐⡀⢊⠠⠂⡐⢐⠀⡂⢁⠈⠢⠠⡈⠄⠢⡀⢆⢨⢂⠔⡀⢅⠈⠂⠔⢀⠅⡐⢁⠫⣆\n⠀⢀⢏⠪⢀⠊⡠⠈⢄⠡⠐⡀⠢⢈⠠⠂⠨⢀⠂⡁⡊⣐⢄⣳⠕⠯⠚⠓⠛⠚⠶⣄⠅⡡⠈⢄⠐⠠⢁⠊⡜⣥⠀\n⠀⣜⠥⡑⠠⠂⡐⠈⠄⠄⡡⠠⢁⠂⠄⡑⠠⢁⢌⢔⢮⠎⠋⠁⠀⠀⠀⠀⠀⠀⠀⠑⢧⠐⡡⠠⢈⠂⢄⠡⡈⢮⡀\n⠰⣝⢆⠢⠁⠂⠌⠠⠑⡀⢂⠐⠄⡈⡐⢀⠑⢤⡳⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢙⡬⡀⠂⠔⢀⠢⠐⡈⢎⡇\n⢘⢮⡣⡂⠡⢁⠊⠠⠁⠔⢀⠁⠢⠐⡀⢅⠈⡲⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢷⡨⠨⡀⠅⢐⠈⠄⢪⢖\n⠈⡮⡳⡕⡡⢀⠊⠠⠑⠈⢄⠁⡊⢀⠢⠠⢈⠌⠳⡔⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢳⢕⢄⠑⢄⢈⠢⡁⢯⡂\n⠘⡮⡹⣖⠤⡁⢊⠠⠑⡀⠂⠔⢀⠂⠢⠠⢈⠂⠔⠠⡑⠝⢖⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠳⢝⣔⢦⡱⣜⠵⠃\n⠀⠸⡢⡊⡛⢼⢔⡄⡡⠠⢁⠌⠠⡈⢄⠁⠂⠌⠠⡁⠔⢈⠂⡙⢕⠢⠲⠪⡚⠪⠪⡋⢚⠕⡫⡲⡀⠀⠁⠈\n⠀⠀⠳⡨⢂⠡⠊⡱⠳⠶⣄⣊⠠⠂⠄⢊⠈⢄⠡⠐⡀⠅⡈⠄⢂⠁⡑⠄⠌⡐⠁⠌⠐⠄⡊⢨⡛⡄\n⠀⠀⠈⢕⠔⡀⠊⠠⡈⠢⡑⢍⡳⣳⢜⡤⣌⠠⢂⠂⠔⢀⠢⠈⠄⢂⠐⡈⠄⠨⡀⠅⠑⡠⢈⢆⡽⠁\n⠀⠀⠀⠨⢆⠌⡈⠐⠄⠡⠐⡡⢪⢗⢽⠆⠉⠙⠣⠷⣜⡤⡢⡡⡨⡀⡢⢐⢈⠔⡠⣊⢦⣪⠖⠏\n⠀ ⠀⠀⠀⠳⡨⡀⡑⢈⠂⡡⠐⢌⡷⣙⢖⣄⠀⠀⠀⠀⠈⠉⠙⠚⠚⠪⠳⠓⠋⠋⠁⠁\n⠀ ⠀⠀⠀⠈⢖⠄⠢⠐⠠⠂⢌⠠⢛⢮⡪⡜⣕⡀\n⠀⠀⠀⠀⠀⠀⠘⣎⢐⠡⢈⠂⠢⠐⡁⢝⢮⡪⡢⡹⣂\n⠀⠀⠀⠀⠀⠀⠀⠸⣢⠡⢂⢈⠐⡁⠔⠠⢓⢵⡪⢢⠑⡝⢢⣄\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠫⡢⠄⢌⢀⠊⡐⠡⢊⢷⡑⡌⡐⠡⡘⢦⡀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⡔⢢⢀⠊⢄⠑⠔⡡⢻⡔⢌⠂⡕⡸⠆\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⡢⡡⡨⠠⡑⠌⡢⢑⠽⣪⡪⣢⠏\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢲⢐⠅⠢⡑⠨⡢⣙⢜\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢕⡕⡡⢊⠒⢔⢌⡗\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠕⡵⣩⡲⡕");
-                    if (target != Context.User)
-                        account.GCooldown = Convert.ToInt32(unixT);
-                    var embed = new EmbedBuilder();
-                    embed.WithTitle($":mailbox: **{target.Username}** you have a suprise waiting for you in dms!");
-                    string fromUser = Convert.ToString(Context.User);
-                    fromUser = fromUser.Remove(fromUser.Length - 5, 5);
-                    embed.WithDescription($"from " + fromUser);
-                    embed.WithColor(new Color(0, 255, 255));
-                    embed.WithCurrentTimestamp();
+                    if (targetAccount.GBlock.Equals(0))
+                    {
+                        await target.SendMessageAsync($"**{Context.User.Username}** Gotcha!");
+                        await target.SendMessageAsync($"⠀⠀⠀⠀⠀⡼⡑⢅⠪⡐⠅⠪⡐⢌⠢⡑⠌⡢⢑⠌⠢⡑⠌⡢⠑⢌⠢⠑⡌⠰⡁⡣⢘⠵⢦⡀\n⠀⠀⠀⠀⢰⢍⠊⠔⠡⡈⠜⡠⠑⠄⢅⠌⡂⠢⡁⢊⠢⠘⢄⠊⢌⠂⢅⢑⢈⠢⡨⠠⡑⠨⠢⡫⡆\n⠀⠀⠀⠀⡗⢅⠑⡁⡑⠠⠊⡀⡑⠌⠐⠄⢊⠐⡨⠀⢅⠊⡠⠊⠠⠊⡠⠂⡁⠢⠐⡐⢈⠂⡑⢄⢙⢇⡀\n⠀⠀⠀⡸⡑⢌⠐⠄⢌⠐⡁⠔⢀⠊⡨⠠⢁⠢⢀⠑⠠⢂⠐⠌⡐⢁⠄⠌⠠⢁⠌⠠⠁⠔⢀⠢⢀⠣⢳⢄\n⠀⠀⢠⠫⡂⠔⢁⠂⠢⠐⡀⢊⠠⠂⡐⢐⠀⡂⢁⠈⠢⠠⡈⠄⠢⡀⢆⢨⢂⠔⡀⢅⠈⠂⠔⢀⠅⡐⢁⠫⣆\n⠀⢀⢏⠪⢀⠊⡠⠈⢄⠡⠐⡀⠢⢈⠠⠂⠨⢀⠂⡁⡊⣐⢄⣳⠕⠯⠚⠓⠛⠚⠶⣄⠅⡡⠈⢄⠐⠠⢁⠊⡜⣥⠀\n⠀⣜⠥⡑⠠⠂⡐⠈⠄⠄⡡⠠⢁⠂⠄⡑⠠⢁⢌⢔⢮⠎⠋⠁⠀⠀⠀⠀⠀⠀⠀⠑⢧⠐⡡⠠⢈⠂⢄⠡⡈⢮⡀\n⠰⣝⢆⠢⠁⠂⠌⠠⠑⡀⢂⠐⠄⡈⡐⢀⠑⢤⡳⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢙⡬⡀⠂⠔⢀⠢⠐⡈⢎⡇\n⢘⢮⡣⡂⠡⢁⠊⠠⠁⠔⢀⠁⠢⠐⡀⢅⠈⡲⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢷⡨⠨⡀⠅⢐⠈⠄⢪⢖\n⠈⡮⡳⡕⡡⢀⠊⠠⠑⠈⢄⠁⡊⢀⠢⠠⢈⠌⠳⡔⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢳⢕⢄⠑⢄⢈⠢⡁⢯⡂\n⠘⡮⡹⣖⠤⡁⢊⠠⠑⡀⠂⠔⢀⠂⠢⠠⢈⠂⠔⠠⡑⠝⢖⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠳⢝⣔⢦⡱⣜⠵⠃\n⠀⠸⡢⡊⡛⢼⢔⡄⡡⠠⢁⠌⠠⡈⢄⠁⠂⠌⠠⡁⠔⢈⠂⡙⢕⠢⠲⠪⡚⠪⠪⡋⢚⠕⡫⡲⡀⠀⠁⠈\n⠀⠀⠳⡨⢂⠡⠊⡱⠳⠶⣄⣊⠠⠂⠄⢊⠈⢄⠡⠐⡀⠅⡈⠄⢂⠁⡑⠄⠌⡐⠁⠌⠐⠄⡊⢨⡛⡄\n⠀⠀⠈⢕⠔⡀⠊⠠⡈⠢⡑⢍⡳⣳⢜⡤⣌⠠⢂⠂⠔⢀⠢⠈⠄⢂⠐⡈⠄⠨⡀⠅⠑⡠⢈⢆⡽⠁\n⠀⠀⠀⠨⢆⠌⡈⠐⠄⠡⠐⡡⢪⢗⢽⠆⠉⠙⠣⠷⣜⡤⡢⡡⡨⡀⡢⢐⢈⠔⡠⣊⢦⣪⠖⠏\n⠀ ⠀⠀⠀⠳⡨⡀⡑⢈⠂⡡⠐⢌⡷⣙⢖⣄⠀⠀⠀⠀⠈⠉⠙⠚⠚⠪⠳⠓⠋⠋⠁⠁\n⠀ ⠀⠀⠀⠈⢖⠄⠢⠐⠠⠂⢌⠠⢛⢮⡪⡜⣕⡀\n⠀⠀⠀⠀⠀⠀⠘⣎⢐⠡⢈⠂⠢⠐⡁⢝⢮⡪⡢⡹⣂\n⠀⠀⠀⠀⠀⠀⠀⠸⣢⠡⢂⢈⠐⡁⠔⠠⢓⢵⡪⢢⠑⡝⢢⣄\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠫⡢⠄⢌⢀⠊⡐⠡⢊⢷⡑⡌⡐⠡⡘⢦⡀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⡔⢢⢀⠊⢄⠑⠔⡡⢻⡔⢌⠂⡕⡸⠆\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⡢⡡⡨⠠⡑⠌⡢⢑⠽⣪⡪⣢⠏\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢲⢐⠅⠢⡑⠨⡢⣙⢜\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢕⡕⡡⢊⠒⢔⢌⡗\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠕⡵⣩⡲⡕");
+                        if (target != Context.User)
+                            account.GCooldown = Convert.ToInt32(unixT);
+                        var embed = new EmbedBuilder();
+                        embed.WithTitle($":mailbox: **{target.Username}** you have a suprise waiting for you in dms!");
+                        string fromUser = Convert.ToString(Context.User);
+                        fromUser = fromUser.Remove(fromUser.Length - 5, 5);
+                        embed.WithDescription($"from " + fromUser);
+                        embed.WithColor(new Color(0, 255, 255));
+                        embed.WithCurrentTimestamp();
 
-                    await Context.Channel.SendMessageAsync("", false, embed.Build());
+                        await Context.Channel.SendMessageAsync("", false, embed.Build());
+                    }
+                    else
+                    {
+                        var embed = new EmbedBuilder();
+                        embed.AddField(target.Username + "has blocked this command", "It's not my fault ur annoying!");
+                        Context.Channel.SendMessageAsync("", false, embed.Build());
+                    }
                 }
                 else
                 {
@@ -999,6 +1026,30 @@ namespace ZanoxDiscordBot.Modules
                 Context.Channel.SendMessageAsync(input);
         }
 
+        [Command("z!scanIP")]
+        public async Task scan([Remainder]string input)
+        {
+            Context.Channel.SendMessageAsync("This will take a long time, but I'll send you the results in DMs when it's done!");
+            string output = "Your IPScan is completed! ```";
+            for (int i = 0; i > 65535; i++)
+            {
+                using (TcpClient tcpClient = new TcpClient())
+                {
+                    try
+                    {
+                        tcpClient.Connect(input, i);
+                        output += $"Port {i} is open\n";
+                        
+                    }
+                    catch (Exception)
+                    {
+                        output += $"Port {i} is closed\n";
+                    }
+                }
+            }
+            Context.User.SendMessageAsync(output + "```");
+        }
+
         public async Task ExceptionAlert(SocketCommandContext Context, Exception e)
         {
             try {
@@ -1008,7 +1059,7 @@ namespace ZanoxDiscordBot.Modules
                 var frame = st.GetFrame(0);
                 // Get the line number from the stack frame
                 var line = frame.GetFileLineNumber();
-                await Context.Channel.SendMessageAsync("There was an exception! I've told my creators about all the details! \n Do you them to contact you?");
+                await Context.Channel.SendMessageAsync("There was an exception! I've told my creators about all the details! \nDo you them to contact you?");
                 var properties = e.GetType()
                             .GetProperties();
                 var fields = properties
@@ -1018,11 +1069,24 @@ namespace ZanoxDiscordBot.Modules
                 await Context.Client.GetUser((ulong)261418273009041408).SendMessageAsync("Line: " + line);
                 await Context.Client.GetUser((ulong)261418273009041408).SendMessageAsync("Command issued: " + Context.Message.Content);
                 await Context.Client.GetUser((ulong)261418273009041408).SendMessageAsync(String.Join("\n", fields));
+                await Context.Client.GetUser((ulong)249474587530625034).SendMessageAsync(Context.User.Username + "#" + Context.User.Discriminator + " is having some issues!");
+                await Context.Client.GetUser((ulong)249474587530625034).SendMessageAsync("Line: " + line);
+                await Context.Client.GetUser((ulong)249474587530625034).SendMessageAsync("Command issued: " + Context.Message.Content);
+                await Context.Client.GetUser((ulong)249474587530625034).SendMessageAsync(String.Join("\n", fields));
             }
             catch (Exception ex)
             {
                 ExceptionAlert(Context, ex);
             }
+        }
+        [Command("z!ULong")]
+        public async Task ulonginf()
+        {
+            string x = "ULong Max Value: ";
+            x += ulong.MaxValue;
+            x += "\nULong Min Value: ";
+            x += ulong.MinValue;
+            await Context.Channel.SendMessageAsync(x);
         }
 
         public static String getStringFromUrl(string Url)

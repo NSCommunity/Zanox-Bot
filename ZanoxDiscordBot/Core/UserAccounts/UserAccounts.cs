@@ -59,7 +59,8 @@ namespace ZanoxDiscordBot.Core.UserAccounts
                 repCooldown = 0,
                 Money = 0,
                 NumberOfWarnings = 0,
-                levelingAlert = 1
+                levelingAlert = 1,
+                GBlock = 0
             };
 
             accounts.Add(newAccount);
