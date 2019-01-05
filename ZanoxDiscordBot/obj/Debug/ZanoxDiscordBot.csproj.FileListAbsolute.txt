@@ -337,3 +337,16 @@ C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\System.Xml.XP
 C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\System.Xml.XPath.XDocument.dll
 C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\PastebinAPI.dll
 C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\obj\Debug\ZanoxDiscordBot.exe.config
+C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\Microsoft.Owin.dll
+C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\Microsoft.Owin.Host.HttpListener.dll
+C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\Microsoft.Owin.Hosting.dll
+C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\Owin.dll
+C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\System.Net.Http.Formatting.dll
+C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\System.Web.Http.dll
+C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\System.Web.Http.SelfHost.dll
+C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\Microsoft.Owin.xml
+C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\Microsoft.Owin.Host.HttpListener.xml
+C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\Microsoft.Owin.Hosting.xml
+C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\System.Net.Http.Formatting.xml
+C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\System.Web.Http.xml
+C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\System.Web.Http.SelfHost.xml

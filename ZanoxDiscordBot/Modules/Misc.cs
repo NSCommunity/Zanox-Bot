@@ -102,6 +102,14 @@ namespace ZanoxDiscordBot.Modules
             }
         }
 
+        [Command("z!god")]
+        public async Task godBecauseEnderWantMeToMakeThis()
+        {
+            var godImg = new EmbedBuilder();
+            godImg.ImageUrl = "https://assetsnffrgf-a.akamaihd.net/assets/m/502012120/univ/art/502012120_univ_sqr_xl.jpg";
+            Context.Channel.SendMessageAsync("", false, godImg.Build());
+        }
+
         [Command("z!ban")]
         [RequireUserPermission(GuildPermission.BanMembers)]
         [RequireBotPermission(GuildPermission.BanMembers)]
@@ -128,7 +136,6 @@ namespace ZanoxDiscordBot.Modules
                 ExceptionAlert(Context, e);
             }
         }
-
 
         [Command("z!game")]
         [RequireUserPermission(GuildPermission.Administrator)]

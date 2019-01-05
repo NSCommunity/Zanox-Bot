@@ -12,6 +12,8 @@ using Discord.Rest;
 using Discord.Webhook;
 using NReco.ImageGenerator;
 using ZanoxDiscordBot.Core.UserAccounts;
+using System.Web.Http;
+using System.Web.Http.SelfHost;
 
 namespace ZanoxDiscordBot
 {
@@ -21,6 +23,25 @@ namespace ZanoxDiscordBot
         CommandHandler _handler;
 
         static void Main(string[] args) => new Program().StartAsync().GetAwaiter().GetResult();
+
+        public async Task startAPI()
+        {
+            bool apiStatus = false;
+            if (apiStatus)
+            {
+                Console.WriteLine("Starting API");
+                var config = new HttpSelfHostConfiguration("http://localhost:8080");
+
+                config.Routes.MapHttpRoute("API Default", "api/{controller}/{id}", new { id = RouteParameter.Optional });
+
+                using (HttpSelfHostServer server = new HttpSelfHostServer(config))
+                {
+                    server.OpenAsync().Wait();
+                    Console.WriteLine("API Started");
+                }
+            }
+
+        }
 
         public async Task additionalHandler(SocketMessage msg)
         {
@@ -284,14 +305,15 @@ namespace ZanoxDiscordBot
 
         public async Task asyncLoop()
         {
+            
             while (true)
             {
                 _client.SetGameAsync($"z!help");
-                await Task.Delay(7500);
+                await Task.Delay(10000);
                 _client.SetGameAsync($"with {memberCount()} players");
-                await Task.Delay(1500);
+                await Task.Delay(2000);
                 _client.SetGameAsync($"with {_client.Guilds.Count} guilds");
-                await Task.Delay(1500);
+                await Task.Delay(2000);
             }
         }
 
@@ -310,6 +332,7 @@ namespace ZanoxDiscordBot
         {
             await _client.SetGameAsync("z!help");
             Task.Run(asyncLoop);
+            Task.Run(startAPI);
         }
 
         private async Task JoinedGuild(SocketGuild arg)
