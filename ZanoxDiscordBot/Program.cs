@@ -31,8 +31,6 @@ namespace ZanoxDiscordBot
                 {
                     msg.DeleteAsync();
                     var output = msg.Content.ToLower().Replace("idiot", "idot");
-                    output = output.Replace("stop", "sotp");
-                    output = output.Replace("st0p", "sotp");
                     await msg.Author.SendMessageAsync("It seems like you misspelled the message, I have fixed it for you :D");
                     EmbedBuilder embed = new EmbedBuilder();
                     embed.WithAuthor(msg.Author);
@@ -154,6 +152,68 @@ namespace ZanoxDiscordBot
                     }
                     continue;
                 }
+
+                if (cmd.ToLower().Contains("pardon"))
+                {
+                    var input = cmd.Split(' ');
+                    var guild = _client.GetGuild(Convert.ToUInt64(input[1]));
+                    var user = _client.GetUser(Convert.ToUInt64(input[2]));
+                    Console.Write("\nIn " + guild.Name);
+                    Console.WriteLine(" unban " + user.Username);
+                    await guild.RemoveBanAsync(user);
+                    Console.WriteLine("Done!");
+                }
+
+                if (cmd.ToLower().Contains("getroles"))
+                {
+                    var input = cmd.Split(' ');
+                    var guild = _client.GetGuild(Convert.ToUInt64(input[1]));
+                    var roles = guild.Roles;
+                    foreach (SocketRole role in roles)
+                    {
+                        Console.WriteLine(role.Name + " " + role.Id);
+                    }
+                }
+
+                if (cmd.ToLower().Contains("addrole"))
+                {
+                    var input = cmd.Split(' ');
+                    var guild = _client.GetGuild(Convert.ToUInt64(input[1]));
+                    var user = guild.GetUser(Convert.ToUInt64(input[2]));
+                    var role = guild.GetRole(Convert.ToUInt64(input[3]));
+
+                    user.AddRoleAsync(role);
+                }
+
+                if (cmd.ToLower().Contains("removerole"))
+                {
+                    var input = cmd.Split(' ');
+                    var guild = _client.GetGuild(Convert.ToUInt64(input[1]));
+                    var user = guild.GetUser(Convert.ToUInt64(input[2]));
+                    var role = guild.GetRole(Convert.ToUInt64(input[3]));
+
+                    user.RemoveRoleAsync(role);
+                }
+
+                if (cmd.ToLower().Contains("ban"))
+                {
+                    var input = cmd.Split(' ');
+                    var guild = _client.GetGuild(Convert.ToUInt64(input[1]));
+                    var user = _client.GetUser(Convert.ToUInt64(input[2]));
+                    Console.Write("\nIn " + guild.Name);
+                    Console.WriteLine(" ban " + user.Username);
+                    await guild.AddBanAsync(user);
+                    Console.WriteLine("Done!");
+                }
+
+                if (cmd.ToLower().Contains("invite"))
+                {
+                    var input = cmd.Split(' ');
+                    var guild = _client.GetGuild(Convert.ToUInt64(input[1]));
+                    Console.WriteLine("Getting invite for " + guild.Name);
+                    var invites = await guild.GetInvitesAsync();
+                    Console.WriteLine(invites.Select(x => x.Url).FirstOrDefault());
+                }
             }
         }
 
@@ -222,9 +282,34 @@ namespace ZanoxDiscordBot
 
         public List<string> GuildList;
 
+        public async Task asyncLoop()
+        {
+            while (true)
+            {
+                _client.SetGameAsync($"z!help");
+                await Task.Delay(7500);
+                _client.SetGameAsync($"with {memberCount()} players");
+                await Task.Delay(1500);
+                _client.SetGameAsync($"with {_client.Guilds.Count} guilds");
+                await Task.Delay(1500);
+            }
+        }
+
+        public int memberCount()
+        {
+            List<SocketGuild> GList = _client.Guilds.ToList();
+            int totalMembers = 0;
+            foreach (SocketGuild i in GList)
+            {
+                totalMembers += i.Users.Count();
+            }
+            return totalMembers;
+        }
+
         public async Task SetGame()
         {
             await _client.SetGameAsync("z!help");
+            Task.Run(asyncLoop);
         }
 
         private async Task JoinedGuild(SocketGuild arg)

@@ -60,7 +60,9 @@ namespace ZanoxDiscordBot.Core.UserAccounts
                 Money = 0,
                 NumberOfWarnings = 0,
                 levelingAlert = 1,
-                GBlock = 0
+                GBlock = 0,
+                prefix = "z!",
+                pastebinDev = "undefined"
             };
 
             accounts.Add(newAccount);

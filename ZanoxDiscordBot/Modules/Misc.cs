@@ -17,6 +17,7 @@ using NReco.ImageGenerator;
 using System.IO;
 using System.Diagnostics;
 using System.Net.Sockets;
+using PastebinAPI;
 
 namespace ZanoxDiscordBot.Modules
 {
@@ -293,7 +294,7 @@ namespace ZanoxDiscordBot.Modules
         {
             try
             {
-                await Context.Channel.SendMessageAsync("Discord: https://discord.gg/dWwBmxB.");
+                await Context.Channel.SendMessageAsync("Discord: https://discord.gg/W6WyVf4");
             }
             catch (Exception e)
             {
@@ -1039,7 +1040,7 @@ namespace ZanoxDiscordBot.Modules
                     {
                         tcpClient.Connect(input, i);
                         output += $"Port {i} is open\n";
-                        
+
                     }
                     catch (Exception)
                     {
@@ -1063,8 +1064,8 @@ namespace ZanoxDiscordBot.Modules
                 var properties = e.GetType()
                             .GetProperties();
                 var fields = properties
-                                 .Select(property => new {Name = property.Name, Value = property.GetValue(e, null)})
-                                 .Select(x => String.Format("{0} = {1}", x.Name,  x.Value != null ? x.Value.ToString() : String.Empty));
+                                 .Select(property => new { Name = property.Name, Value = property.GetValue(e, null) })
+                                 .Select(x => String.Format("{0} = {1}", x.Name, x.Value != null ? x.Value.ToString() : String.Empty));
                 await Context.Client.GetUser((ulong)261418273009041408).SendMessageAsync(Context.User.Username + "#" + Context.User.Discriminator + " is having some issues!");
                 await Context.Client.GetUser((ulong)261418273009041408).SendMessageAsync("Line: " + line);
                 await Context.Client.GetUser((ulong)261418273009041408).SendMessageAsync("Command issued: " + Context.Message.Content);
@@ -1087,6 +1088,81 @@ namespace ZanoxDiscordBot.Modules
             x += "\nULong Min Value: ";
             x += ulong.MinValue;
             await Context.Channel.SendMessageAsync(x);
+        }
+
+        [Command("z!pastebin")]
+        public async Task pastebinHelp()
+        {
+            Context.Channel.SendMessageAsync("");
+        }
+
+        [Command("z!pastebin")]
+        public async Task paste(string cmd, [Remainder]string input)
+        {
+            var account = UserAccounts.GetAccount(Context.User);
+            if (cmd.Contains("paste"))
+            {
+                if (account.pastebinDev != "undefined")
+                {
+                    Context.Channel.SendMessageAsync("");
+                }
+                else
+                {
+                    
+                }
+            }
+            else
+            {
+                if (input.Contains(""))
+                {
+
+                }
+            }
+        }
+
+        [Command("z!contentFromUrl")]
+        public async Task getcont([Remainder]string input)
+        {
+            try
+            {
+                using (WebClient client = new WebClient())
+                {
+                    Context.Channel.SendMessageAsync(System.Text.Encoding.Default.GetString(client.DownloadData(input)));
+                }
+            }
+            catch (Exception e)
+            {
+                await ExceptionAlert(Context, e);
+            }
+        }
+
+        private HttpClient tweetClient = new HttpClient();
+
+        [Command("z!tweet")]
+        public async Task tweetFromZanox([Remainder]string input)
+        {
+            if (Context.User.Id == 261418273009041408 || Context.User.Id == 249474587530625034) {
+                Context.Channel.SendMessageAsync("Sending tweet... Please was a few seconds");
+                var embed = new EmbedBuilder();
+                embed.WithTitle("Tweeting from ZanoxTweets");
+                embed.WithImageUrl("https://cdn2.iconfinder.com/data/icons/minimalism/512/twitter.png");
+                embed.AddField("Tweet Sent!", input);
+                var values = new Dictionary<string, string> { { "value1", input } };
+
+                var content = new FormUrlEncodedContent(values);
+                var response = await tweetClient.PostAsync("https://maker.ifttt.com/trigger/tweet/with/key/fo1dRsVnxv8poyjrFkxUo2qzvAZbI4gZ6DL4E6E9eN4", content);
+                Context.Channel.SendMessageAsync("", false, embed.Build());
+            }
+            else
+            {
+                Context.Channel.SendMessageAsync("You don't have permission to use this command");
+            }
+        }
+
+        public string getPrefix(SocketCommandContext cc)
+        {
+            var account = UserAccounts.GetOrCreateAccount(cc.User.Id);
+            return account.prefix;
         }
 
         public static String getStringFromUrl(string Url)

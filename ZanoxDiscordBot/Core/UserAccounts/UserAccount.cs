@@ -27,6 +27,10 @@ namespace ZanoxDiscordBot.Core.UserAccounts
 
         public int GBlock { get; set; }
 
+        public string prefix { get; set; }
+
+        public string pastebinDev { get; set; }
+
         public uint LevelNumber
         {
             get
