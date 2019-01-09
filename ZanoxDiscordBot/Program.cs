@@ -40,55 +40,11 @@ namespace ZanoxDiscordBot
                     Console.WriteLine("API Started");
                 }
             }
-
         }
 
         public async Task additionalHandler(SocketMessage msg)
         {
-            await Task.Delay(0);
-            if ((msg.Author as SocketGuildUser).Guild.Id == 525056817399726102)
-            {
-                if (msg.Content.ToLower().Contains("idiot") || msg.Content.ToLower().Contains("stop") || msg.Content.ToLower().Contains("st0p"))
-                {
-                    msg.DeleteAsync();
-                    var output = msg.Content.ToLower().Replace("idiot", "idot");
-                    await msg.Author.SendMessageAsync("It seems like you misspelled the message, I have fixed it for you :D");
-                    EmbedBuilder embed = new EmbedBuilder();
-                    embed.WithAuthor(msg.Author);
-                    embed.AddInlineField(output, "Fixed by Zanox");
-                    await msg.Channel.SendMessageAsync("", false, embed.Build());
-                }
-
-                if (!msg.Author.IsBot && msg.Content.Any(char.IsDigit) && msg.Content.Contains("14ify"))
-                {
-                    char[] fourteen = msg.Content.ToCharArray();
-                    string fourteenString = "";
-                    bool prevNumber = false;
-                    foreach (char inp in fourteen)
-                    {
-                        long x;
-                        bool canConvert = long.TryParse(Convert.ToString(inp), out x);
-                        if (canConvert)
-                        {
-                            if (!prevNumber)
-                            {
-                                fourteenString += "14";
-                                prevNumber = true;
-                            }
-                        }
-                        else
-                        {
-                            fourteenString += inp;
-                            prevNumber = false;
-                        }
-                    }
-                    msg.DeleteAsync();
-                    EmbedBuilder embed = new EmbedBuilder();
-                    embed.WithAuthor(msg.Author);
-                    embed.AddInlineField(fourteenString, "Fixed by Zanox");
-                    msg.Channel.SendMessageAsync("", false, embed.Build());
-                }
-            }
+            //If we want to handle messages async...
         }
 
         public async Task zConsole()
@@ -237,16 +193,22 @@ namespace ZanoxDiscordBot
                 }
             }
         }
-
         
         public static List<IUserMessage> reactionWatch;
 
+        public static List<UInt64> ZanoxAdmins = new List<UInt64>();
+
         public async Task StartAsync()
         {
+
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {
                 LogLevel = LogSeverity.Verbose
             });
+
+            ZanoxAdmins.Add(261418273009041408);
+            ZanoxAdmins.Add(249474587530625034);
+
             _client.UserJoined += AnnounceJoined;
             _client.UserLeft += AnnounceLeave;
             _client.Log += Log;
@@ -305,7 +267,6 @@ namespace ZanoxDiscordBot
 
         public async Task asyncLoop()
         {
-            
             while (true)
             {
                 _client.SetGameAsync($"z!help");

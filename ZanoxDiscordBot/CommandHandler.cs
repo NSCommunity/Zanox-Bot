@@ -50,7 +50,7 @@ namespace ZanoxDiscordBot
 
             int argPos = 0;
             
-            if(msg.HasStringPrefix("", ref argPos) ||msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
+            if(msg.HasStringPrefix("", ref argPos) || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
                 Task.Run(() => _service.ExecuteAsync(context, argPos));
             }
