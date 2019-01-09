@@ -23,7 +23,7 @@ using System.Text.RegularExpressions;
 
 namespace ZanoxDiscordBot.Modules
 {
-    class Networking : ModuleBase<SocketCommandContext>
+    public class Networking : ModuleBase<SocketCommandContext>
     {
         [Command("z!scanIP")]
         public async Task scan([Remainder]string input)

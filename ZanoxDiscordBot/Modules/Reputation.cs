@@ -23,7 +23,7 @@ using System.Text.RegularExpressions;
 
 namespace ZanoxDiscordBot.Modules
 {
-    class Reputation : ModuleBase<SocketCommandContext>
+    public class Reputation : ModuleBase<SocketCommandContext>
     {
         [Command("z!rep")]
         public async Task Rep([Remainder]string arg = "")

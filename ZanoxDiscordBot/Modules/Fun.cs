@@ -23,7 +23,7 @@ using System.Text.RegularExpressions;
 
 namespace ZanoxDiscordBot.Modules
 {
-    class Fun : ModuleBase<SocketCommandContext>
+    public class Fun : ModuleBase<SocketCommandContext>
     {
         [Command("z!blockGotcha")]
         public async Task GBlock()

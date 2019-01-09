@@ -23,7 +23,7 @@ using System.Text.RegularExpressions;
 
 namespace ZanoxDiscordBot.Modules
 {
-    class Extensions
+    public class Extensions
     {
         public static IEnumerable<String> SplitInParts(String s, Int32 partLength)
         {

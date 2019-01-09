@@ -23,7 +23,7 @@ using System.Text.RegularExpressions;
 
 namespace ZanoxDiscordBot.Modules
 {
-    class Special : ModuleBase<SocketCommandContext>
+    public class Special : ModuleBase<SocketCommandContext>
     {
         private HttpClient tweetClient = new HttpClient();
 

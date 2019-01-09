@@ -23,7 +23,7 @@ using System.Text.RegularExpressions;
 
 namespace ZanoxDiscordBot.Modules
 {
-    class Programming : ModuleBase<SocketCommandContext>
+    public class Programming : ModuleBase<SocketCommandContext>
     {
         [Command("z!ULong")]
         public async Task ulonginf()
