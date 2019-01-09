@@ -195,17 +195,19 @@ namespace ZanoxDiscordBot.Modules
                 var frame = st.GetFrame(0);
                 // Get the line number from the stack frame
                 var line = frame.GetFileLineNumber();
-                await Context.Channel.SendMessageAsync("There was an exception! I've told my creators about all the details! \nDo you them to contact you?");
+                await Context.Channel.SendMessageAsync("There was an exception! I've told my creators about all the details!");
                 var properties = e.GetType()
                             .GetProperties();
                 var fields = properties
-                                 .Select(property => new { Name = property.Name, Value = property.GetValue(e, null) })
+                                 .Select(property => new { property.Name, Value = property.GetValue(e, null) })
                                  .Select(x => String.Format("{0} = {1}", x.Name, x.Value != null ? x.Value.ToString() : String.Empty));
                 var ZanoxChannel = (Context.Client.GetChannel(532641855083380747) as ISocketMessageChannel);
-                
-                await ZanoxChannel.SendMessageAsync(Context.User.Username + "#" + Context.User.Discriminator + " is having some issues!");
-                await ZanoxChannel.SendMessageAsync("Line: " + line);
-                await ZanoxChannel.SendMessageAsync("Command issued: " + Context.Message.Content);
+
+                string output = "```";
+
+                output += Context.User.Username + "#" + Context.User.Discriminator + " is having some issues!\n";
+                output += "Line: " + line + "\n";
+                await ZanoxChannel.SendMessageAsync(output + "Command issued: " + Context.Message.Content + "```");
                 foreach (string part in SplitInParts(String.Join("\n", fields), 1750))
                     await ZanoxChannel.SendMessageAsync(part);
             }
