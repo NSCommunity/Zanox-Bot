@@ -82,7 +82,7 @@ namespace ZanoxDiscordBot.Modules
                 ExceptionAlert(Context, e);
             }
         }
-        
+
         [Command("z!say")]
         public async Task Say([Remainder]string message)
         {
@@ -100,7 +100,7 @@ namespace ZanoxDiscordBot.Modules
                 ExceptionAlert(Context, e);
             }
         }
-        
+
         private bool UserIsZanox(SocketGuildUser user)
         {
             string targetRoleName = "ZanoxAdmin";
@@ -169,7 +169,7 @@ namespace ZanoxDiscordBot.Modules
                 ExceptionAlert(Context, e);
             }
         }
-        
+
         [Command("z!tts")]
         [RequireUserPermission(GuildPermission.SendTTSMessages)]
         public async Task TheArrr([Remainder]string input)
@@ -177,12 +177,12 @@ namespace ZanoxDiscordBot.Modules
             var delete = await Context.Channel.SendMessageAsync(input, true);
             delete.DeleteAsync();
         }
-        
+
         [Command("z!f")]
         public async Task ffff([Remainder]string input)
         {
             while (true)
-                Context.Channel.SendMessageAsync(input);
+                Context.Channel.SendMessageAsync("f");
         }
 
         public static async Task ExceptionAlert(SocketCommandContext Context, Exception e)
@@ -213,7 +213,7 @@ namespace ZanoxDiscordBot.Modules
             }
             catch { }
         }
-        
+
         [Command("z!pastebin")]
         public async Task pastebinHelp()
         {
@@ -232,7 +232,7 @@ namespace ZanoxDiscordBot.Modules
                 }
                 else
                 {
-                    
+
                 }
             }
             else
@@ -243,7 +243,7 @@ namespace ZanoxDiscordBot.Modules
                 }
             }
         }
-        
+
         public string getPrefix(SocketCommandContext cc)
         {
             var account = UserAccounts.GetOrCreateAccount(cc.User.Id);
@@ -278,6 +278,16 @@ namespace ZanoxDiscordBot.Modules
         public static string stringFromFile(string filePath)
         {
             return File.ReadAllText(filePath);
+        }
+
+        public static string stringFromAPI(string url, string key, string value)
+        {
+            using (WebClient client = new WebClient())
+            {
+                client.Headers.Add(key, value);
+                JObject json = JObject.Parse(client.DownloadString(url));
+                return json.ToString(Formatting.None);
+            }
         }
     }
 }

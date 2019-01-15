@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AkiNet, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AkiNet.1.0.0\lib\net461\AkiNet.dll</HintPath>
+    </Reference>
     <Reference Include="Discord.Net.Commands, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Discord.Net.Commands.1.0.2\lib\netstandard1.1\Discord.Net.Commands.dll</HintPath>
     </Reference>
@@ -190,8 +193,10 @@
     <Compile Include="Core\LevelingSystem\Leveling.cs" />
     <Compile Include="Core\UserAccounts\UserAccount.cs" />
     <Compile Include="Core\UserAccounts\UserAccounts.cs" />
+    <Compile Include="Modules\Akinator.cs" />
     <Compile Include="Modules\Electronics.cs" />
     <Compile Include="Modules\Extensions.cs" />
+    <Compile Include="Modules\Fortnite.cs" />
     <Compile Include="Modules\Fun.cs" />
     <Compile Include="Modules\Hypixel.cs" />
     <Compile Include="Modules\Imaging.cs" />

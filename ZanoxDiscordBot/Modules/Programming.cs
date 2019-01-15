@@ -25,13 +25,63 @@ namespace ZanoxDiscordBot.Modules
 {
     public class Programming : ModuleBase<SocketCommandContext>
     {
-        [Command("z!ULong")]
-        public async Task ulonginf()
+        [Command("z!UInt64")]
+        public async Task UInt64inf()
         {
-            string x = "ULong Max Value: ";
-            x += ulong.MaxValue;
+            string x = "UInt64 (ULong) Max Value: ";
+            x += UInt64.MaxValue;
             x += "\nULong Min Value: ";
-            x += ulong.MinValue;
+            x += UInt64.MinValue;
+            await Context.Channel.SendMessageAsync(x);
+        }
+
+        [Command("z!UInt32")]
+        public async Task UInt32inf()
+        {
+            string x = "UInt32 Max Value: ";
+            x += UInt32.MaxValue;
+            x += "\nULong Min Value: ";
+            x += UInt32.MinValue;
+            await Context.Channel.SendMessageAsync(x);
+        }
+
+        [Command("z!UInt16")]
+        public async Task UInt16inf()
+        {
+            string x = "UInt16 Max Value: ";
+            x += UInt16.MaxValue;
+            x += "\nULong Min Value: ";
+            x += UInt16.MinValue;
+            await Context.Channel.SendMessageAsync(x);
+        }
+
+        [Command("z!Int64")]
+        public async Task Int64inf()
+        {
+            string x = "UInt64 (ULong) Max Value: ";
+            x += Int64.MaxValue;
+            x += "\nULong Min Value: ";
+            x += Int64.MinValue;
+            await Context.Channel.SendMessageAsync(x);
+        }
+
+        [Command("z!Int32")]
+        public async Task Int32inf()
+        {
+            string x = "UInt32 Max Value: ";
+            x += Int32.MaxValue;
+            x += "\nULong Min Value: ";
+            x += Int32.MinValue;
+            await Context.Channel.SendMessageAsync(x);
+        }
+
+        [Command("z!Int16")]
+        public async Task Int16inf()
+        {
+            string x = "UInt16 Max Value: ";
+            x += Int16.MaxValue;
+            x += "\nULong Min Value: ";
+            x += Int16.MinValue;
             await Context.Channel.SendMessageAsync(x);
         }
 

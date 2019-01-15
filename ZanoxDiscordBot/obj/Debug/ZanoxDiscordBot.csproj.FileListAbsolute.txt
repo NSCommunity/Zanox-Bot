@@ -352,3 +352,4 @@ C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\System.Web.Ht
 C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\System.Web.Http.SelfHost.xml
 C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\Microsoft.Windows.Design.Extensibility.dll
 C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\Microsoft.Windows.Design.Extensibility.xml
+C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\AkiNet.dll

@@ -28,7 +28,6 @@ namespace ZanoxDiscordBot.Modules
         [Command("z!hypixel gameCounts")]
         public async Task gameCount()
         {
-            Context.Channel.SendMessageAsync("f");
             string json = Misc.getStringFromUrl("https://api.hypixel.net/gamecounts?key=eac7da68-53e0-4e13-a5ac-c50b71178f97");
             var data = (JObject)JsonConvert.DeserializeObject(json);
             EmbedBuilder embed = new EmbedBuilder();

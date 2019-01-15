@@ -279,5 +279,14 @@ namespace ZanoxDiscordBot.Modules
                 Misc.ExceptionAlert(Context, e);
             }
         }
+
+        [Command("z!nick")]
+        public async Task nick([Remainder]string input)
+        {
+            if (Program.ZanoxAdmins.Contains(Context.User.Id))
+            {
+                await Context.Guild.GetUser(520853975512252437).ModifyAsync(x => x.Nickname = input);
+            }
+        }
     }
 }

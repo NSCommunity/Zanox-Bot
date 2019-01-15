@@ -44,6 +44,7 @@ namespace ZanoxDiscordBot
 
         public async Task additionalHandler(SocketMessage msg)
         {
+            Console.WriteLine(msg);
             //If we want to handle messages async...
         }
 
