@@ -32,7 +32,7 @@ namespace ZanoxDiscordBot.Modules
         {
             if (Program.ZanoxAdmins.Contains(Context.User.Id))
             {
-                Context.Channel.SendMessageAsync("Sending tweet... Please was a few seconds");
+                var msg = await Context.Channel.SendMessageAsync("Sending tweet... Please wait a few seconds");
                 var embed = new EmbedBuilder();
                 embed.WithTitle("Tweeting from ZanoxTweets");
                 embed.WithImageUrl("https://cdn2.iconfinder.com/data/icons/minimalism/512/twitter.png");
@@ -41,7 +41,9 @@ namespace ZanoxDiscordBot.Modules
 
                 var content = new FormUrlEncodedContent(values);
                 var response = await tweetClient.PostAsync("https://maker.ifttt.com/trigger/tweet/with/key/fo1dRsVnxv8poyjrFkxUo2qzvAZbI4gZ6DL4E6E9eN4", content);
-                Context.Channel.SendMessageAsync("", false, embed.Build());
+                var oof = await response.Content.ReadAsStringAsync();
+                await Context.User.SendMessageAsync(oof);
+                await msg.ModifyAsync(x => x.Embed = embed.Build());
             }
             else
             {

@@ -59,7 +59,7 @@ namespace ZanoxDiscordBot.Core.UserAccounts
                 repCooldown = 0,
                 Money = 0,
                 NumberOfWarnings = 0,
-                levelingAlert = 1,
+                levelingAlert = 0,
                 GBlock = 0,
                 prefix = "z!",
                 pastebinDev = "undefined"

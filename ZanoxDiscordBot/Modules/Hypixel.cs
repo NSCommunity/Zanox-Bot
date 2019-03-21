@@ -32,16 +32,6 @@ namespace ZanoxDiscordBot.Modules
             var data = (JObject)JsonConvert.DeserializeObject(json);
             EmbedBuilder embed = new EmbedBuilder();
 
-            var roles = (Context.User as SocketGuildUser).Roles.ToList();
-            embed.WithColor(roles[2].Color);
-            Console.WriteLine(roles[0].Name);
-            Console.WriteLine(roles[1].Name);
-            Console.WriteLine(roles[2].Name);
-            Console.WriteLine(roles[3].Name);
-            Console.WriteLine(roles[4].Name);
-            Console.WriteLine(roles[5].Name);
-            Console.WriteLine(roles[6].Name);
-
             embed.AddField("Main Lobby", data["games"]["MAIN_LOBBY"]["players"].Value<string>() + " players");
             embed.AddInlineField("Bed Wars", data["games"]["BEDWARS"]["players"].Value<string>() + " players");
             embed.AddInlineField("SkyWars", data["games"]["SKYWARS"]["players"].Value<string>() + " players");

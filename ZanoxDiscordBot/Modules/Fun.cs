@@ -20,6 +20,8 @@ using System.Net.Sockets;
 using PastebinAPI;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
+using RestSharp;
+using Discord.Rest;
 
 namespace ZanoxDiscordBot.Modules
 {
@@ -113,6 +115,42 @@ namespace ZanoxDiscordBot.Modules
             }
         }
 
+        [Command("z!lyrics")]
+        public async Task getLyrics([Remainder]string query)
+        {
+            var embed = new EmbedBuilder();
+            var client = new RestClient($"https://api.ksoft.si/lyrics/search?q={query}");
+            var request = new RestRequest(Method.GET);
+            request.AddHeader("Authorization", "Bearer b2eb53917f17dbc6d0c86c7080b4e6226b7d5fa0");
+            IRestResponse response = client.Execute(request);
+            var data = (JObject)JsonConvert.DeserializeObject(response.Content);
+            embed.WithTitle(data["data"][0]["name"].Value<string>() + " - " + data["data"][0]["artist"].Value<string>());
+            embed.WithDescription("\n\n" + data["data"][0]["lyrics"].Value<string>());
+            embed.WithImageUrl(data["data"][0]["album_art"].Value<string>());
+            Context.Channel.SendMessageAsync("", false, embed.Build());
+        }
+
+        [Command("z!gender")]
+        public async Task nameGuess([Remainder]string input)
+        {
+            var client = new RestClient($"https://gender-api.com/get?name={input}&key=fzfVBzvNhzpFBonWdd");
+            var request = new RestRequest(Method.GET);
+            request.AddHeader("Postman-Token", "fe8805d9-d9e8-417c-8649-bbb5efb7d99d");
+            request.AddHeader("cache-control", "no-cache");
+            IRestResponse response = client.Execute(request);
+            var data = (JObject)JsonConvert.DeserializeObject(response.Content);
+            var embed = new EmbedBuilder();
+            embed.WithTitle("Gender Guesser");
+            if (data["gender"].Value<string>() == "female")
+                embed.WithColor(255, 192, 203);
+            if (data["gender"].Value<string>() == "male")
+                embed.WithColor(0, 191, 255);
+            if (data["gender"].Value<string>() == "unknown")
+                embed.WithColor(255, 0, 0);
+            embed.WithDescription(data["gender"].Value<string>());
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
+        }
+
         [Command("z!ali-a")]
         public async Task alia()
         {
@@ -198,6 +236,39 @@ namespace ZanoxDiscordBot.Modules
                 }
                 catch { }
             }
+        }
+
+        [Command("z!default")]
+        public async Task defaultDance()
+        {
+            List<string> defaultStates = new List<string>();
+            defaultStates.Add("⠀⠀⠀⠀⣀⣤oof⠀⠀⠀⠀⣿⠿⣶oof⠀⠀⠀⠀⣿⣿⣀oof⠀⠀⠀⣶⣶⣿⠿⠛⣶oof⠤⣀⠛⣿⣿⣿⣿⣿⣿⣭⣿⣤oof⠒⠀⠀⠀⠉⣿⣿⣿⣿⠀⠀⠉⣀oof⠀⠤⣤⣤⣀⣿⣿⣿⣿⣀⠀⠀⣿oof⠀⠀⠛⣿⣿⣿⣿⣿⣿⣿⣭⣶⠉oof⠀⠀⠀⠤⣿⣿⣿⣿⣿⣿⣿oof⠀⠀⠀⣭⣿⣿⣿⠀⣿⣿⣿oof⠀⠀⠀⣉⣿⣿⠿⠀⠿⣿⣿oof⠀⠀⠀⠀⣿⣿⠀⠀⠀⣿⣿⣤oof⠀⠀⠀⣀⣿⣿⠀⠀⠀⣿⣿⣿oof⠀⠀⠀⣿⣿⣿⠀⠀⠀⣿⣿⣿oof⠀⠀⠀⣿⣿⠛⠀⠀⠀⠉⣿⣿oof⠀⠀⠀⠉⣿⠀⠀⠀⠀⠀⠛⣿oof⠀⠀⠀⠀⣿⠀⠀⠀⠀⠀⠀⣿⣿oof⠀⠀⠀⠀⣛⠀⠀⠀⠀⠀⠀⠛⠿⠿⠿oof⠀⠀⠀⠛⠛");
+            defaultStates.Add("⠀⠀⠀⣀⣶⣀oof⠀⠀⠀⠒⣛⣭oof⠀⠀⠀⣀⠿⣿⣶oof⠀⣤⣿⠤⣭⣿⣿oof⣤⣿⣿⣿⠛⣿⣿⠀⣀oof⠀⣀⠤⣿⣿⣶⣤⣒⣛oof⠉⠀⣀⣿⣿⣿⣿⣭⠉oof⠀⠀⣭⣿⣿⠿⠿⣿oof⠀⣶⣿⣿⠛⠀⣿⣿oof⣤⣿⣿⠉⠤⣿⣿⠿oof⣿⣿⠛⠀⠿⣿⣿oof⣿⣿⣤⠀⣿⣿⠿oof⠀⣿⣿⣶⠀⣿⣿⣶oof⠀⠀⠛⣿⠀⠿⣿⣿oof⠀⠀⠀⣉⣿⠀⣿⣿oof⠀⠶⣶⠿⠛⠀⠉⣿oof⠀⠀⠀⠀⠀⠀⣀⣿oof⠀⠀⠀⠀⠀⣶⣿⠿");
+            defaultStates.Add("⠀⠀⠀⠀⠀⠀⠀⠀⣤⣿⣿⠶⠀⠀⣀⣀oof⠀⠀⠀⠀⠀⠀⣀⣀⣤⣤⣶⣿⣿⣿⣿⣿⣿oof⠀⠀⣀⣶⣤⣤⠿⠶⠿⠿⠿⣿⣿⣿⣉⣿⣿oof⠿⣉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠛⣤⣿⣿⣿⣀oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⣿⣿⣿⣿⣶⣤oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣿⣿⣿⣿⠿⣛⣿oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⠛⣿⣿⣿⣿oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣶⣿⣿⠿⠀⣿⣿⣿⠛oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⠀⠀⣿⣿⣿oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠿⠿⣿⠀⠀⣿⣶oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⠛⠀⠀⣿⣿⣶oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⣿⣿⠤oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠿⣿oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣀oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣶⣿");
+            defaultStates.Add("⠀⠀⣀oof⠀⠿⣿⣿⣀oof⠀⠉⣿⣿⣀oof⠀⠀⠛⣿⣭⣀⣀⣤oof⠀⠀⣿⣿⣿⣿⣿⠛⠿⣶⣀oof⠀⣿⣿⣿⣿⣿⣿⠀⠀⠀⣉⣶oof⠀⠀⠉⣿⣿⣿⣿⣀⠀⠀⣿⠉oof⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿oof⠀⣀⣿⣿⣿⣿⣿⣿⣿⣿⠿oof⠀⣿⣿⣿⠿⠉⣿⣿⣿⣿oof⠀⣿⣿⠿⠀⠀⣿⣿⣿⣿oof⣶⣿⣿⠀⠀⠀⠀⣿⣿⣿oof⠛⣿⣿⣀⠀⠀⠀⣿⣿⣿⣿⣶⣀oof⠀⣿⣿⠉⠀⠀⠀⠉⠉⠉⠛⠛⠿⣿⣶oof⠀⠀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣿oof⠀⠀⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉oof⣀⣶⣿⠛");
+            defaultStates.Add("⠀⠀⠀⠀⠀⠀⠀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀oof⠀⠀⠀⠀⠀⠀⣿⣿⣿⣤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣤⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀oof⠀⠀⠀⠀⠀⠀⠉⣿⣿⣿⣶⣿⣿⣿⣶⣶⣤⣶⣶⠶⠛⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀oof⠀⠀⠀⠀⠀⠀⣤⣿⠿⣿⣿⣿⣿⣿⠀⠀⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀oof⠛⣿⣤⣤⣀⣤⠿⠉⠀⠉⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀oof⠀⠉⠉⠉⠉⠉⠀⠀⠀⠀⠉⣿⣿⣿⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣶⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⠛⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣛⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀oof⠀⠀⠀⠀⠀⠀⠀⣶⣿⣿⠛⠿⣿⣿⣿⣶⣤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀oof⠀⠀⠀⠀⠀⠀⠀⣿⠛⠉⠀⠀⠀⠛⠿⣿⣿⣶⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀oof⠀⠀⠀⠀⠀⠀⣿⣀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠿⣶⣤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀oof⠀⠀⠀⠀⠀⠛⠿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣿⣿⠿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠛⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
+            defaultStates.Add("⠀⠀⠀⠀⠀⠀⣤⣶⣶oof⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣀⣀oof⠀⠀⠀⠀⠀⣀⣶⣿⣿⣿⣿⣿⣿oof⣤⣶⣀⠿⠶⣿⣿⣿⠿⣿⣿⣿⣿oof⠉⠿⣿⣿⠿⠛⠉⠀⣿⣿⣿⣿⣿oof⠀⠀⠉⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣤⣤oof⠀⠀⠀⠀⠀⠀⠀⣤⣶⣿⣿⣿⣿⣿⣿oof⠀⠀⠀⠀⠀⣀⣿⣿⣿⣿⣿⠿⣿⣿⣿⣿oof⠀⠀⠀⠀⣀⣿⣿⣿⠿⠉⠀⠀⣿⣿⣿⣿oof⠀⠀⠀⠀⣿⣿⠿⠉⠀⠀⠀⠀⠿⣿⣿⠛oof⠀⠀⠀⠀⠛⣿⣿⣀⠀⠀⠀⠀⠀⣿⣿⣀oof⠀⠀⠀⠀⠀⣿⣿⣿⠀⠀⠀⠀⠀⠿⣿⣿oof⠀⠀⠀⠀⠀⠉⣿⣿⠀⠀⠀⠀⠀⠀⠉⣿oof⠀⠀⠀⠀⠀⠀⠀⣿⠀⠀⠀⠀⠀⠀⣀⣿oof⠀⠀⠀⠀⠀⠀⣀⣿⣿oof⠀⠀⠀⠀⠤⣿⠿⠿⠿");
+            defaultStates.Add("⠀⠀⠀⠀⣀oof⠀⠀⣶⣿⠿⠀⠀⠀⣀⠀⣤⣤oof⠀⣶⣿⠀⠀⠀⠀⣿⣿⣿⠛⠛⠿⣤⣀oof⣶⣿⣤⣤⣤⣤⣤⣿⣿⣿⣀⣤⣶⣭⣿⣶⣀oof⠉⠉⠉⠛⠛⠿⣿⣿⣿⣿⣿⣿⣿⠛⠛⠿⠿oof⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⠿oof⠀⠀⠀⠀⠀⠀⠀⠿⣿⣿⣿⣿oof⠀⠀⠀⠀⠀⠀⠀⠀⣭⣿⣿⣿⣿⣿oof⠀⠀⠀⠀⠀⠀⠀⣤⣿⣿⣿⣿⣿⣿oof⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⠿oof⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⠿oof⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿oof⠀⠀⠀⠀⠀⠀⠀⠉⣿⣿⣿⣿oof⠀⠀⠀⠀⠀⠀⠀⠀⠉⣿⣿⣿⣿oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⣿⠛⠿⣿⣤oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣿⠀⠀⠀⣿⣿⣤oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⠀⠀⠀⣶⣿⠛⠉oof⠀⠀⠀⠀⠀⠀⠀⠀⣤⣿⣿⠀⠀⠉oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉");
+            defaultStates.Add("⠀⠀⠀⠀⠀⠀⣶⣿⣶oof⠀⠀⠀⣤⣤⣤⣿⣿⣿oof⠀⠀⣶⣿⣿⣿⣿⣿⣿⣿⣶oof⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿oof⠀⠀⣿⣉⣿⣿⣿⣿⣉⠉⣿⣶oof⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⠿⣿oof⠀⣤⣿⣿⣿⣿⣿⣿⣿⠿⠀⣿⣶oof⣤⣿⠿⣿⣿⣿⣿⣿⠿⠀⠀⣿⣿⣤oof⠉⠉⠀⣿⣿⣿⣿⣿⠀⠀⠒⠛⠿⠿⠿oof⠀⠀⠀⠉⣿⣿⣿⠀⠀⠀⠀⠀⠀⠉oof⠀⠀⠀⣿⣿⣿⣿⣿⣶oof⠀⠀⠀⠀⣿⠉⠿⣿⣿oof⠀⠀⠀⠀⣿⣤⠀⠛⣿⣿oof⠀⠀⠀⠀⣶⣿⠀⠀⠀⣿⣶oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⣭⣿⣿oof⠀⠀⠀⠀⠀⠀⠀⠀⣤⣿⣿⠉");
+            defaultStates.Add("⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣶oof⠀⠀⠀⠀⠀⣀⣀⠀⣶⣿⣿⠶oof⣶⣿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣤⣤oof⠀⠉⠶⣶⣀⣿⣿⣿⣿⣿⣿⣿⠿⣿⣤⣀oof⠀⠀⠀⣿⣿⠿⠉⣿⣿⣿⣿⣭⠀⠶⠿⠿oof⠀⠀⠛⠛⠿⠀⠀⣿⣿⣿⣉⠿⣿⠶oof⠀⠀⠀⠀⠀⣤⣶⣿⣿⣿⣿⣿oof⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⠒oof⠀⠀⠀⠀⣀⣿⣿⣿⣿⣿⣿⣿oof⠀⠀⠀⠀⠀⣿⣿⣿⠛⣭⣭⠉oof⠀⠀⠀⠀⠀⣿⣿⣭⣤⣿⠛oof⠀⠀⠀⠀⠀⠛⠿⣿⣿⣿⣭oof⠀⠀⠀⠀⠀⠀⠀⣿⣿⠉⠛⠿⣶⣤oof⠀⠀⠀⠀⠀⠀⣀⣿⠀⠀⣶⣶⠿⠿⠿oof⠀⠀⠀⠀⠀⠀⣿⠛oof⠀⠀⠀⠀⠀⠀⣭⣶");
+            defaultStates.Add("⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣤oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿oof⠀⠀⣶⠀⠀⣀⣤⣶⣤⣉⣿⣿⣤⣀oof⠤⣤⣿⣤⣿⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣀oof⠀⠛⠿⠀⠀⠀⠀⠉⣿⣿⣿⣿⣿⠉⠛⠿⣿⣤oof⠀⠀⠀⠀⠀⠀⠀⠀⠿⣿⣿⣿⠛⠀⠀⠀⣶⠿oof⠀⠀⠀⠀⠀⠀⠀⠀⣀⣿⣿⣿⣿⣤⠀⣿⠿oof⠀⠀⠀⠀⠀⠀⠀⣶⣿⣿⣿⣿⣿⣿⣿⣿oof⠀⠀⠀⠀⠀⠀⠀⠿⣿⣿⣿⣿⣿⠿⠉⠉oof⠀⠀⠀⠀⠀⠀⠀⠉⣿⣿⣿⣿⠿oof⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⠉oof⠀⠀⠀⠀⠀⠀⠀⠀⣛⣿⣭⣶⣀oof⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⠉⠛⣿oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⠀⠀⣿⣿oof⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣉⠀⣶⠿oof⠀⠀⠀⠀⠀⠀⠀⠀⣶⣿⠿oof⠀⠀⠀⠀⠀⠀⠀⠛⠿⠛");
+            defaultStates.Add("⠀⠀⠀⣶⣿⣶oof⠀⠀⠀⣿⣿⣿⣀oof⠀⣀⣿⣿⣿⣿⣿⣿oof⣶⣿⠛⣭⣿⣿⣿⣿oof⠛⠛⠛⣿⣿⣿⣿⠿oof⠀⠀⠀⠀⣿⣿⣿oof⠀⠀⣀⣭⣿⣿⣿⣿⣀oof⠀⠤⣿⣿⣿⣿⣿⣿⠉oof⠀⣿⣿⣿⣿⣿⣿⠉oof⣿⣿⣿⣿⣿⣿oof⣿⣿⣶⣿⣿oof⠉⠛⣿⣿⣶⣤oof⠀⠀⠉⠿⣿⣿⣤oof⠀⠀⣀⣤⣿⣿⣿oof⠀⠒⠿⠛⠉⠿⣿oof⠀⠀⠀⠀⠀⣀⣿⣿oof⠀⠀⠀⠀⣶⠿⠿⠛");
+            RestUserMessage msg = null;
+            int i = 0;
+            foreach (string state in defaultStates)
+            {
+                if (i == 0)
+                    msg = await Context.Channel.SendMessageAsync("```" + state.Replace("oof", Environment.NewLine) + "```");
+                else
+                    await msg.ModifyAsync(x =>
+                    {
+                        x.Content = "```" + state.Replace("oof", Environment.NewLine) + "```";
+                    });
+                await Task.Delay(1250);
+                i++;
+            }
+            await Context.Message.DeleteAsync();
+            await msg.DeleteAsync();
         }
     }
 }

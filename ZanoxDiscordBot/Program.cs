@@ -2,14 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using System.IO;
-using Discord.Net;
-using Discord.Commands;
-using Discord.Rest;
-using Discord.Webhook;
 using NReco.ImageGenerator;
 using ZanoxDiscordBot.Core.UserAccounts;
 using System.Web.Http;
@@ -24,7 +19,7 @@ namespace ZanoxDiscordBot
 
         static void Main(string[] args) => new Program().StartAsync().GetAwaiter().GetResult();
 
-        public async Task startAPI()
+        public async Task StartAPI()
         {
             bool apiStatus = false;
             if (apiStatus)
@@ -206,7 +201,6 @@ namespace ZanoxDiscordBot
             {
                 LogLevel = LogSeverity.Verbose
             });
-
             ZanoxAdmins.Add(261418273009041408);
             ZanoxAdmins.Add(249474587530625034);
 
@@ -294,7 +288,7 @@ namespace ZanoxDiscordBot
         {
             await _client.SetGameAsync("z!help");
             Task.Run(asyncLoop);
-            Task.Run(startAPI);
+            Task.Run(StartAPI);
         }
 
         private async Task JoinedGuild(SocketGuild arg)

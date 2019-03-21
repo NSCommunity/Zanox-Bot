@@ -353,3 +353,5 @@ C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\System.Web.Ht
 C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\Microsoft.Windows.Design.Extensibility.dll
 C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\Microsoft.Windows.Design.Extensibility.xml
 C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\AkiNet.dll
+C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\RestSharp.dll
+C:\Users\victor.back\Documents\Zanox-Bot\ZanoxDiscordBot\bin\Debug\RestSharp.xml
